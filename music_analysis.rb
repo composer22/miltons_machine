@@ -93,17 +93,19 @@ class MatrixAnalyzer
 
   attr_accessor :report_details  # If true, show details of the analysis, else summary only. default = false
 
-  # @horizontal_sets             - A 2d array for holding horizontal ordered sets (rows) - each set:
-  #                                1) representing an ordered voice of pitches in the matrix
-  #                                2) should be rotatable like a cannon
-  #                                3) encoded in mod12 pitch class notation (0 = c up to 11 = b)
-  #
-  # @vertical_sets               - A 2d array for holding set of pitches to analyze when looking for vertical
-  #                                sonorities.  These should be transformed using Tn or TnI
-  #
-  # @summary_totals              - Used to collect a final tally of subsets found. For example:
-  #                                summary_totals[9] = 21 means 21 permutations had 9 subsets found in each
-  #
+
+  attr_accessor :horizontal_sets # A 2d array for holding horizontal ordered sets (rows) - each set:
+                                 # 1) representing an ordered voice of pitches in the matrix
+                                 # 2) should be rotatable like a cannon
+                                 # 3) encoded in mod12 pitch class notation (0 = c up to 11 = b)
+
+  attr_accessor :vertical_sets   # A 2d array for holding set of pitches to analyze when looking for vertical
+                                 # sonorities.  These should be transformed using Tn or TnI
+
+  attr_accessor :summary_totals  # Used to collect a final tally of subsets found. For example:
+                                 # summary_totals[9] = 21 means 21 permutations had 9 subsets found in each
+
+  protected     :horizontal_sets, :vertical_sets, :summary_totals
 
   public
 
