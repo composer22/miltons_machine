@@ -134,7 +134,7 @@ class MatrixAnalyzer
   # * *Returns* :
   #   - [Object] -> a new MatrixAnalyzer Object
   # * *Raises* :
-  #   - +ArgumentError+ -> if any mandatory value is nil
+  #   - +ArgumentError+ -> if any mandatory value is nil or wrong type
   #
 
   def initialize(minimax_score = Range.new(0, 99999999), report_details = false)
@@ -185,7 +185,7 @@ class MatrixAnalyzer
   # * *Returns* :
   #   - none
   # * *Raises* :
-  #   - +ArgumentError+ -> if any mandatory value is nil
+  #   - +ArgumentError+ -> if any mandatory value is nil or wrong type
   #
 
   def add_search_set(search_set, transpose = 0)
@@ -208,7 +208,7 @@ class MatrixAnalyzer
   # * *Returns* :
   #   - none
   # * *Raises* :
-  #   - +ArgumentError+ -> if any mandatory value is nil
+  #   - +ArgumentError+ -> if any mandatory value is nil or wrong type
   #
 
   def run_analysis(recursive = true)
@@ -325,11 +325,10 @@ class MatrixAnalyzer
   # * *Returns* :
   #   - none
   # * *Raises* :
-  #   - +ArgumentError+ -> if any mandatory value is nil
+  #   - none
   #
 
   def accumulate_summary_totals(score)
-    raise ArgumentError, "score is mandatory" if(score.nil?)
     @summary_totals[score] ||= 0
     @summary_totals[score] += 1
   end
@@ -342,12 +341,10 @@ class MatrixAnalyzer
   # * *Returns* :
   #   - none
   # * *Raises* :
-  #   - +ArgumentError+ -> if any mandatory value is nil
+  #   - none
   #
 
   def print_details(result_counts, score)
-    raise ArgumentError, "result_counts are mandatory" if(result_counts.nil?)
-    raise ArgumentError, "score is mandatory" if(score.nil?)
     puts ('=' * 10) << "\n"
     @groups.each_with_index(){ |group, n | group.each(){ |row| puts row.to_s << " Group " << (n + 1).to_s }}
     puts  '-' *  (@groups[0][0].length() * 3)
