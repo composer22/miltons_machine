@@ -39,7 +39,6 @@ class ForteSets
   #   File layour: <set_name>\t<prime_set>\t<interval_vector>\t<description>\n
   FORTE_SETS_CSV = "forte_sets.csv"
 
-
   attr_accessor :dictionary
 
   private       :dictionary
@@ -66,7 +65,7 @@ class ForteSets
   # * *Parameters* :
   #   - +name+ [String] -> the Forte name of the set to retrieve
   # * *Returns* :
-  #   - none
+  #   - [Array] or nil -> a copy of the prime set from the dictionary
   # * *Raises* :
   #   - +ArgumentError+ -> if any mandatory value is nil or wrong type
   #
@@ -76,7 +75,7 @@ class ForteSets
     raise ArgumentError, "name must be a string" unless(name.instance_of?(String))
 
     forte_array = @dictionary[name]
-    forte_array.nil? ? forte_set = nil : forte_set = forte_array[0]        # Set ex [0,2,4,5]
+    forte_array.nil? ? forte_set = nil : forte_set = Array.new(forte_array[0])        # Set ex [0,2,4,5]
     forte_set
   end
 
@@ -85,7 +84,7 @@ class ForteSets
   # * *Parameters* :
   #   - +name+ [String] -> the Forte name of the set to retrieve
   # * *Returns* :
-  #   - none
+  #   - [Array] or nil -> a copy of the interval vector from the dictionary
   # * *Raises* :
   #   - +ArgumentError+ -> if any mandatory value is nil or wrong type
   #
@@ -95,7 +94,7 @@ class ForteSets
     raise ArgumentError, "name must be a string" unless(name.instance_of?(String))
 
     forte_array = @dictionary[name]
-    forte_array.nil? ? forte_vector = nil : forte_vector = forte_array[1]         # interval vector
+    forte_array.nil? ? forte_vector = nil : forte_vector = Array.new(forte_array[1])         # interval vector
     forte_vector
   end
 
@@ -104,7 +103,7 @@ class ForteSets
   # * *Parameters* :
   #   - +name+ [String] -> the Forte name of the set to retrieve
   # * *Returns* :
-  #   - none
+  #   - [String] or nil -> a copy of the set description from the dictionary
   # * *Raises* :
   #   - +ArgumentError+ -> if any mandatory value is nil or wrong type
   #
@@ -114,7 +113,7 @@ class ForteSets
     raise ArgumentError, "name must be a string" unless(name.instance_of?(String))
 
     forte_array = @dictionary[name]
-    forte_array.nil? ? forte_description = nil : forte_description = forte_array[2]         # Description
+    forte_array.nil? ? forte_description = nil : forte_description = String.new(forte_array[2])      # Description
     forte_description
   end
 
@@ -138,7 +137,7 @@ class ForteSets
        columns = row.split("\t")
        key = columns[0]                                      # Set name
        prime_set =  columns[1].split('')
-       prime_set.collect!() do |pc|                           # Store integer representations
+       prime_set.collect!() do |pc|                          # Store integer representations only
          case pc.to_s
            when 'A' then pc = 10
            when 'B' then pc = 11
