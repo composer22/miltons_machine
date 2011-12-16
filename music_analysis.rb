@@ -1,6 +1,5 @@
-#!/usr/bin/env ruby
-
 require 'set'
+require './forte_sets'                      # temp tag here until we gem it
 
 # ============================================================================
 # Class: Musical Matrix Analyzer
@@ -62,6 +61,8 @@ require 'set'
 #    0.upto(11) do |i|
 #      analysis_engine.add_search_set(Array.new(major), i)     # Tn
 #      analysis_engine.add_search_set(Array.new(minor), i)     # TnI
+#      #  analysis_engine.add_forte_set("3-11", i)             # Tn      <== or optionally use Forte Set names
+#      #  analysis_engine.add_forte_set("3-11i", i)            # TnI     <== or optionally use Forte Set names
 #    end
 #
 #    analysis_engine.run_analysis()
@@ -89,10 +90,9 @@ require 'set'
 #
 #    ex:  there are 42 permutation solutions that have 5 columns holding major or minor chords
 #
-#   TODO More report filtering options and statistic measurements
 #   TODO Allow for smaller subset comparison in the search dictionary ex 8 pc in a column look for 4 pc patterns
+#   TODO More report filtering options and statistic measurements
 #   TODO Allow for horizontal searches
-#   TODO Allow for Forte prime search sets ex: 3-11 = [0, 3, 7] = minor/major
 #   TODO Performance improvement - allow for start and stop rotation indexes so work can be broken up
 #   TODO Performance improvement - parallel forking/threads, better algorithms etc...
 # =============================================================================
@@ -193,6 +193,31 @@ class MatrixAnalyzer
     raise ArgumentError, "search_set must an Array object" unless(search_set.instance_of?(Array))
     raise ArgumentError, "transpose must an integer" unless(transpose.instance_of?(Fixnum))
     raise ArgumentError, "transpose must be between 0 and 11" unless((0..11).include?(transpose))
+
+    search_set.collect!{ |pc| pc = self.transpose_mod12(pc, transpose) }
+    @search_sets << Set.new(search_set)
+  end
+
+  # Insert a forte set into the search dictionary
+  #
+  # * *Parameters* :
+  #   - +forte_set+ [String] -> The target set name we are searching
+  #   - +transpose+ [Integer] -> Transpose the submitted set + n (optional)
+  # * *Returns* :
+  #   - none
+  # * *Raises* :
+  #   - +ArgumentError+ -> if any mandatory value is nil or wrong type
+  #   - +KeyError+ -> could not find forte_set
+  #
+
+  def add_forte_set(forte_set, transpose = 0)
+    raise ArgumentError, "forte_set is mandatory" if(forte_set.nil?)
+    raise ArgumentError, "forte_set must a String object" unless(forte_set.instance_of?(String))
+    raise ArgumentError, "transpose must an integer" unless(transpose.instance_of?(Fixnum))
+    raise ArgumentError, "transpose must be between 0 and 11" unless((0..11).include?(transpose))
+
+    search_set = ForteSets.instance.get_set(forte_set)
+    raise KeyError, "forte_set could not be found" if(search_set.nil?)
 
     search_set.collect!{ |pc| pc = self.transpose_mod12(pc, transpose) }
     @search_sets << Set.new(search_set)
@@ -518,8 +543,10 @@ end
     #
     ## Then, create all transpositions of sets to search for:
     #0.upto(11) do |i|
+    #  analysis_engine.add_forte_set("3-11", i)     # Tn
+    #  analysis_engine.add_forte_set("3-11i", i)     # TnI
     #  analysis_engine.add_search_set(Array.new(major), i)     # Tn
     #  analysis_engine.add_search_set(Array.new(minor), i)     # TnI
-    #end
+    # end
     #
     #analysis_engine.run_analysis()
