@@ -90,7 +90,6 @@ require './forte_sets'                      # temp tag here until we gem it
 #
 #    ex:  there are 42 permutation solutions that have 5 columns holding major or minor chords
 #
-#   TODO Allow for smaller subset comparison in the search dictionary ex 8 pc in a column look for 4 pc patterns
 #   TODO More report filtering options and statistic measurements
 #   TODO Allow for horizontal searches
 #   TODO Performance improvement - allow for start and stop rotation indexes so work can be broken up
@@ -171,7 +170,8 @@ class MatrixAnalyzer
     raise ArgumentError, "transpose must an integer" unless(transpose.instance_of?(Fixnum))
     raise ArgumentError, "transpose must be between 0 and 11" unless((0..11).include?(transpose))
 
-    group_id -= 1       # make it a real index
+    group_id -= 1           # make it a real index
+    row = Array.new(row)    # copy - not original
     row.collect!{ |pc| pc = self.transpose_mod12(pc, transpose) }
     @groups[group_id] ||= Array.new()
     @groups[group_id] << row
@@ -194,6 +194,7 @@ class MatrixAnalyzer
     raise ArgumentError, "transpose must an integer" unless(transpose.instance_of?(Fixnum))
     raise ArgumentError, "transpose must be between 0 and 11" unless((0..11).include?(transpose))
 
+    search_set = Array.new(search_set)     # copy - not original
     search_set.collect!{ |pc| pc = self.transpose_mod12(pc, transpose) }
     @search_sets << Set.new(search_set)
   end
@@ -218,7 +219,6 @@ class MatrixAnalyzer
 
     search_set = ForteSets.instance.get_set(forte_set)
     raise KeyError, "forte_set could not be found" if(search_set.nil?)
-
     search_set.collect!{ |pc| pc = self.transpose_mod12(pc, transpose) }
     @search_sets << Set.new(search_set)
   end
@@ -261,7 +261,7 @@ class MatrixAnalyzer
 
     #  Calculate total number of rotation permutations for the run.
     number_of_columns = @groups[0][0].length()
-    number_of_groups =  @groups.length() - 1
+    number_of_groups  = @groups.length() - 1
     @maximum_rotations = number_of_columns ** number_of_groups
   end
 
@@ -323,7 +323,7 @@ class MatrixAnalyzer
       end
 
       # Search the dictionary of vertical sets we are looking for and increment column counter if found.
-      @search_sets.each{ |set_to_search| result_counts[column_id] += 1 if(sonority_to_test == set_to_search) }
+      @search_sets.each{ |set_to_search| result_counts[column_id] += 1 if(set_to_search.subset?(sonority_to_test)) }
     end
 
     # Accumulate a cross total of column result to create a final score for the current rotation snapshot.
@@ -495,7 +495,7 @@ class MatrixAnalyzer
         end
 
         # Search the dictionary of vertical sets we are looking for and increment column counter if found.
-        @search_sets.each{ |set_to_search| result_counts[column_id] += 1 if(sonority_to_test == set_to_search) }
+        @search_sets.each{ |set_to_search| result_counts[column_id] += 1 if(set_to_search.subset?(sonority_to_test)) }
       end
 
       # Accumulate a cross total of column result to create a final score for the current rotation snapshot.
@@ -528,25 +528,27 @@ class MatrixAnalyzer
   end
 
 end
-    #
-    #melody = [0, 0, 0, 4, 4, 4, 7, 7, 0, 7, 2, 0, 7, 3, 0, 0]
-    #major =  [0, 4, 7]
-    #minor =  [0, 3, 7]
-    #
-    #analysis_engine = MatrixAnalyzer.new()
-    #analysis_engine.report_details=(true)
-    #
-    ## First add the rows.  Three voices = triadic
-    #analysis_engine.add_row(1, melody)
-    #analysis_engine.add_row(2, Array.new(melody))
-    #analysis_engine.add_row(3, Array.new(melody))
-    #
-    ## Then, create all transpositions of sets to search for:
-    #0.upto(11) do |i|
-    #  analysis_engine.add_forte_set("3-11", i)     # Tn
-    #  analysis_engine.add_forte_set("3-11i", i)     # TnI
-    #  analysis_engine.add_search_set(Array.new(major), i)     # Tn
-    #  analysis_engine.add_search_set(Array.new(minor), i)     # TnI
-    # end
-    #
-    #analysis_engine.run_analysis()
+
+#melody = [0, 0, 0, 4, 4, 4, 7, 7, 0, 7, 2, 0, 7, 3, 0, 0]
+#major =  [0, 4, 7]
+#minor =  [0, 3, 7]
+#
+#analysis_engine = MatrixAnalyzer.new()
+#analysis_engine.report_details=(true)
+#
+## First add the rows.  Three voices = triadic
+#analysis_engine.add_row(1, melody)
+#analysis_engine.add_row(2, Array.new(melody))
+#analysis_engine.add_row(3, Array.new(melody))
+#
+## Then, create all transpositions of sets to search for:
+#0.upto(11) do |i|
+#  #analysis_engine.add_forte_set("3-11", i)     # Tn
+#  #analysis_engine.add_forte_set("3-11i", i)     # TnI
+#  analysis_engine.add_search_set(Array.new(major), i)     # Tn
+#  analysis_engine.add_search_set(Array.new(minor), i)     # TnI
+#end
+#
+#analysis_engine.run_analysis()
+
+
