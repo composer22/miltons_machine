@@ -1,2 +1,7 @@
-Ruby code related to the analysis of musical sets as defined in the various contexts of 12 tone theory via
-Forte, Morris etc.
+This library of Ruby code is primarily dedicated to the analysis and "practical" application of set theory for musical
+composition - as defined in the various contexts of 12 tone theory and its offshoots (e.g. Forte, Morris, Starr,
+Lewin, Cohn, etc.).  Additional features and functions from other theoretics will be provided from time to time to
+supplement this basis.
+
+"Milton", in the title, refers to the theorist and American composer Milton Byron Babbitt to which this project
+is dedicated to (http://en.wikipedia.org/wiki/Milton_Babbitt)
