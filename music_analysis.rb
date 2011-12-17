@@ -34,14 +34,14 @@ require './forte_sets'                      # temp tag here until we gem it
 #
 # example: "row row row your boat"
 #
-# Strong beats of melody:
+# From the beats of the melody:
 #
 #    melody = [0, 0, 0, 4, 4, 4, 7, 7, 0, 7, 2, 0, 7, 3, 0, 0]
 #
 # Sonorities to search for:
 #
-#    major = [0, 4, 7]
-#    minor = [0, 3, 7]
+#    major = [0, 4, 7]    # 3-11i
+#    minor = [0, 3, 7]    # 3-11
 #
 # == Code example:
 #
@@ -54,13 +54,13 @@ require './forte_sets'                      # temp tag here until we gem it
 #
 #    # First add the rows.  Three voices = triadic; independent in separate groups
 #    analysis_engine.add_row(1, melody)
-#    analysis_engine.add_row(2, Array.new(melody))
-#    analysis_engine.add_row(3, Array.new(melody))
+#    analysis_engine.add_row(2, melody)
+#    analysis_engine.add_row(3, melody)
 #
 #    # Then, create all transpositions of sets to search for:
 #    0.upto(11) do |i|
-#      analysis_engine.add_search_set(Array.new(major), i)     # Tn
-#      analysis_engine.add_search_set(Array.new(minor), i)     # TnI
+#      analysis_engine.add_search_set(major, i)     # Tn
+#      analysis_engine.add_search_set(minor, i)     # TnI
 #      #  analysis_engine.add_forte_set("3-11", i)             # Tn      <== or optionally use Forte Set names
 #      #  analysis_engine.add_forte_set("3-11i", i)            # TnI     <== or optionally use Forte Set names
 #    end
@@ -538,15 +538,15 @@ end
 #
 ## First add the rows.  Three voices = triadic
 #analysis_engine.add_row(1, melody)
-#analysis_engine.add_row(2, Array.new(melody))
-#analysis_engine.add_row(3, Array.new(melody))
+#analysis_engine.add_row(2, melody)
+#analysis_engine.add_row(3, melody)
 #
 ## Then, create all transpositions of sets to search for:
 #0.upto(11) do |i|
 #  #analysis_engine.add_forte_set("3-11", i)     # Tn
 #  #analysis_engine.add_forte_set("3-11i", i)     # TnI
-#  analysis_engine.add_search_set(Array.new(major), i)     # Tn
-#  analysis_engine.add_search_set(Array.new(minor), i)     # TnI
+#  analysis_engine.add_search_set(major, i)     # Tn
+#  analysis_engine.add_search_set(minor, i)     # TnI
 #end
 #
 #analysis_engine.run_analysis()
