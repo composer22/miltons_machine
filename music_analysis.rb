@@ -59,8 +59,8 @@ require './forte_sets'                      # temp tag here until we gem it
 #
 #    # Then, create all transpositions of sets to search for:
 #    0.upto(11) do |i|
-#      analysis_engine.add_search_set(major, i)     # Tn
-#      analysis_engine.add_search_set(minor, i)     # TnI
+#      analysis_engine.add_search_set(major, i)               # TnI
+#      analysis_engine.add_search_set(minor, i)                # Tn
 #      #  analysis_engine.add_forte_set("3-11", i)             # Tn      <== or optionally use Forte Set names
 #      #  analysis_engine.add_forte_set("3-11i", i)            # TnI     <== or optionally use Forte Set names
 #    end
@@ -170,11 +170,9 @@ class MatrixAnalyzer
     raise ArgumentError, "transpose must an integer" unless(transpose.instance_of?(Fixnum))
     raise ArgumentError, "transpose must be between 0 and 11" unless((0..11).include?(transpose))
 
-    group_id -= 1           # make it a real index
-    row = Array.new(row)    # copy - not original
-    row.collect!{ |pc| pc = self.transpose_mod12(pc, transpose) }
-    @groups[group_id] ||= Array.new()
-    @groups[group_id] << row
+    row =  ForteSets.instance.transpose_set(Array.new(row), transpose)
+    @groups[group_id - 1] ||= Array.new()
+    @groups[group_id - 1] << row
   end
 
   # Insert a set into the search dictionary
@@ -194,9 +192,7 @@ class MatrixAnalyzer
     raise ArgumentError, "transpose must an integer" unless(transpose.instance_of?(Fixnum))
     raise ArgumentError, "transpose must be between 0 and 11" unless((0..11).include?(transpose))
 
-    search_set = Array.new(search_set)     # copy - not original
-    search_set.collect!{ |pc| pc = self.transpose_mod12(pc, transpose) }
-    @search_sets << Set.new(search_set)
+    @search_sets << Set.new(ForteSets.instance.transpose_set(Array.new(search_set), transpose))
   end
 
   # Insert a forte set into the search dictionary
@@ -219,8 +215,7 @@ class MatrixAnalyzer
 
     search_set = ForteSets.instance.get_set(forte_set)
     raise KeyError, "forte_set could not be found" if(search_set.nil?)
-    search_set.collect!{ |pc| pc = self.transpose_mod12(pc, transpose) }
-    @search_sets << Set.new(search_set)
+    @search_sets << Set.new(ForteSets.instance.transpose_set(search_set, transpose))
   end
 
   # Run the analysis and print out the results
@@ -409,37 +404,19 @@ class MatrixAnalyzer
     puts "\n** End of Report"
   end
 
-  # Given a musical pitch, and how many 1/2 steps you want to transpose it, returns a new pitch at the new
-  # transposition
+  # EXPERIMENTAL ONLY
+  #
+  # A NON-recursive SINGLE inline routine that emulates the same functionality of rotate_group() including all
+  # sub-calls. This is only here for experimenting with maximizing performance over recursive descent methods.
+  # Honestly, I haven't found any difference on larger matrix's yet.
   #
   # * *Parameters* :
-  #   - +pc+ [Integer] -> A pitch to increment 0 = c; 1 = c#...11 = b
-  #   - +n+ [Integer] -> Tn or how many steps to increment (optional)
+  #   - none
   # * *Returns* :
-  #   - [Integer] -> The new transposed pitch
+  #   - none
   # * *Raises* :
-  #   - +ArgumentError+ -> if any mandatory value is nil
+  #   - none
   #
-
-  def transpose_mod12(pc, n = 0)
-    raise ArgumentError, "pc is mandatory" if (pc.nil?)
-    pc_result = pc + n
-    pc_result > 11 ?  pc_result - 12 : pc_result
-  end
-
-  ## EXPERIMENTAL ONLY
-  ##
-  ## A NON-recursive SINGLE inline routine that emulates the same functionality of rotate_group() including all
-  ## sub-calls. This is only here for experimenting with maximizing performance over recursive descent methods.
-  ## Honestly, I haven't found any difference on larger matrix's yet.
-  ##
-  ## * *Parameters* :
-  ##   - none
-  ## * *Returns* :
-  ##   - none
-  ## * *Raises* :
-  ##   - none
-  ##
 
   def rotate_experiment()
     max_group_index       = @groups.length() - 1

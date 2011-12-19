@@ -117,6 +117,86 @@ class ForteSets
     forte_description
   end
 
+  # Given a set of pitches, and how many 1/2 steps you want to transpose it, returns a new set at the new
+  # transposition
+  #
+  # * *Parameters* :
+  #   - +set+ [Array] -> The set to transpose 0 = c; 1 = c#...11 = b
+  #   - +n+ [Integer] -> Tn or how many steps to increment (optional)
+  # * *Returns* :
+  #   - [Array] -> The new transposed Array
+  # * *Raises* :
+  #   - +ArgumentError+ -> if any mandatory value is nil
+  #
+
+  def transpose_set(set, n = 0)
+    raise ArgumentError, "set is mandatory" if (set.nil?)
+    raise ArgumentError, "set must be an Array" unless (set.instance_of?(Array))
+    set.each {|pc| raise ArgumentError, "set values must be between 0 and 11" unless ((0..11).include?(pc))}
+    raise ArgumentError, "n must be an integer" unless (n.instance_of?(Fixnum))
+    raise ArgumentError, "n must be between 0-11" unless ((0..11).include?(n))
+    return_set = Array.new(set)
+    return_set.collect!{ |pc| pc = self.transpose_pc(pc, n) }
+    return_set
+  end
+
+  # Given a set of pitches, return the sets inversion
+  #
+  # * *Parameters* :
+  #   - +set+ [Array] -> The set to invert 0 = c; 1 = c#...11 = b
+  # * *Returns* :
+  #   - [Array] -> The new inverted Array
+  # * *Raises* :
+  #   - +ArgumentError+ -> if any mandatory value is nil
+  #
+
+  def invert_set(set)
+    raise ArgumentError, "set is mandatory" if (set.nil?)
+    raise ArgumentError, "set must be an Array" unless (set.instance_of?(Array))
+    set.each {|pc| raise ArgumentError, "set values must be between 0 and 11" unless ((0..11).include?(pc))}
+    return_set = Array.new(set)
+    return_set.collect!{ |pc| pc = self.invert_pc(pc) }
+    return_set
+  end
+
+  # Given a musical pitch, and how many 1/2 steps you want to transpose it, returns a new pitch at the new
+  # transposition
+  #
+  # * *Parameters* :
+  #   - +pc+ [Integer] -> A pitch to increment 0 = c; 1 = c#...11 = b
+  #   - +n+ [Integer] -> Tn or how many steps to increment (optional)
+  # * *Returns* :
+  #   - [Integer] -> The new transposed pitch
+  # * *Raises* :
+  #   - +ArgumentError+ -> if any mandatory value is nil
+  #
+
+  def transpose_pc(pc, n = 0)
+      raise ArgumentError, "pc is mandatory" if (pc.nil?)
+      raise ArgumentError, "pc must be an integer" unless (pc.instance_of?(Fixnum))
+      raise ArgumentError, "pc must be between 0-11" unless ((0..11).include?(pc))
+      raise ArgumentError, "n must be an integer" unless (n.instance_of?(Fixnum))
+      raise ArgumentError, "n must be between 0-11" unless ((0..11).include?(n))
+      (pc + n)  % 12
+  end
+
+  # Given a musical pitch, return the inversion of the pitch
+  #
+  # * *Parameters* :
+  #   - +pc+ [Integer] -> A pitch to increment 0 = c; 1 = c#...11 = b
+  # * *Returns* :
+  #   - [Integer] -> The new inverted pitch
+  # * *Raises* :
+  #   - +ArgumentError+ -> if any mandatory value is nil
+  #
+
+  def invert_pc(pc)
+      raise ArgumentError, "pc is mandatory" if (pc.nil?)
+      raise ArgumentError, "pc must be an integer" unless (pc.instance_of?(Fixnum))
+      raise ArgumentError, "pc must be between 0-11" unless ((0..11).include?(pc))
+      (12 - pc)  % 12
+  end
+
   protected
 
   # Loads the dictionary from a CSV file into a hash dictionary
