@@ -59,7 +59,7 @@ require './forte_sets'                      # temp tag here until we gem it
 #
 #    # Then, create all transpositions of sets to search for:
 #    0.upto(11) do |i|
-#      analysis_engine.add_search_set(major, i)               # TnI
+#      analysis_engine.add_search_set(major, i)                # TnI
 #      analysis_engine.add_search_set(minor, i)                # Tn
 #      #  analysis_engine.add_forte_set("3-11", i)             # Tn      <== or optionally use Forte Set names
 #      #  analysis_engine.add_forte_set("3-11i", i)            # TnI     <== or optionally use Forte Set names
@@ -170,9 +170,8 @@ class MatrixAnalyzer
     raise ArgumentError, "transpose must an integer" unless(transpose.instance_of?(Fixnum))
     raise ArgumentError, "transpose must be between 0 and 11" unless((0..11).include?(transpose))
 
-    row =  ForteSets.instance.transpose_set(Array.new(row), transpose)
     @groups[group_id - 1] ||= Array.new()
-    @groups[group_id - 1] << row
+    @groups[group_id - 1] << ForteSets.instance.transpose_set(row, transpose)
   end
 
   # Insert a set into the search dictionary
@@ -192,7 +191,7 @@ class MatrixAnalyzer
     raise ArgumentError, "transpose must an integer" unless(transpose.instance_of?(Fixnum))
     raise ArgumentError, "transpose must be between 0 and 11" unless((0..11).include?(transpose))
 
-    @search_sets << Set.new(ForteSets.instance.transpose_set(Array.new(search_set), transpose))
+    @search_sets << Set.new(ForteSets.instance.transpose_set(search_set, transpose))
   end
 
   # Insert a forte set into the search dictionary
@@ -527,5 +526,3 @@ end
 #end
 #
 #analysis_engine.run_analysis()
-
-
