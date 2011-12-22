@@ -2,7 +2,7 @@ require 'set'
 require './forte_sets'                      # temp tag here until we gem it
 
 # ============================================================================
-# Class: Musical Matrix Analyzer
+# Class: Matrix Analyzer
 #
 # Given an array where each element in the array is a group of rows - each row representing ordered musical pitches:
 # Permutate each group of rows in parallel using rotation.  After each rotation search each column (intersecting all
@@ -199,6 +199,7 @@ class MatrixAnalyzer
 
     search_set = ForteSets.instance.get_set(forte_set)
     raise KeyError, "forte_set could not be found" if search_set.nil?
+
     @search_sets << Set.new( ForteSets.instance.transpose_set(search_set, transpose) )
   end
 
@@ -302,14 +303,14 @@ class MatrixAnalyzer
       end
 
       # Search the dictionary of vertical sets we are looking for and increment column counter if found.
-      @search_sets.each { |set_to_search| result_counts[column_id] += 1 if(set_to_search.subset?(sonority_to_test)) }
+      @search_sets.each { |set_to_search| result_counts[column_id] += 1 if set_to_search.subset?(sonority_to_test) }
     end
 
     # Accumulate a cross total of column result to create a final score for the current rotation snapshot.
     score = result_counts.inject(0) { |sum, col_result| sum += col_result }
 
     # If we meet the search criteria then add results to report totals and optionally print details.
-    if( @minimax_score.include?(score) )
+    if @minimax_score.include?(score)
       self.accumulate_summary_totals(score)
 
       # Optionally print details of this rotation snapshot.
@@ -416,7 +417,7 @@ class MatrixAnalyzer
 
     while current_level > 0 do
       # Fill work variables when first entering or returning to this level
-      unless(current_level == last_level_processed)
+      unless current_level == last_level_processed
         rotation_counter = last_rotation_counter.at(current_level)
         rotation_counter ||= -1
         group = @groups[current_level]
@@ -425,7 +426,7 @@ class MatrixAnalyzer
       last_level_processed = current_level
 
       # If no more columns to rotate then stop processing row...
-      if(rotation_counter == max_column_index)
+      if rotation_counter == max_column_index
         last_rotation_counter[current_level] = -1                # Rewind
         current_level -= 1                                       # Go up a level
         next
@@ -435,7 +436,7 @@ class MatrixAnalyzer
       rotation_counter += 1
 
       # Leaf row gets to analyze columns, otherwise go deeper.
-      unless(current_level == max_group_index)
+      unless current_level == max_group_index
         last_rotation_counter[current_level] = rotation_counter  # Save index
         current_level += 1                                       # Call
         next
@@ -456,14 +457,14 @@ class MatrixAnalyzer
         end
 
         # Search the dictionary of vertical sets we are looking for and increment column counter if found.
-        @search_sets.each { |set_to_search| result_counts[column_id] += 1 if(set_to_search.subset?(sonority_to_test)) }
+        @search_sets.each { |set_to_search| result_counts[column_id] += 1 if set_to_search.subset?(sonority_to_test) }
       end
 
       # Accumulate a cross total of column result to create a final score for the current rotation snapshot.
       score = result_counts.inject(0) { |sum, col_result| sum += col_result }
 
       # If we meet the search criteria then add results to report totals and optionally print details.
-      if(@minimax_score.include?(score))
+      if @minimax_score.include?(score)
         @summary_totals[score] ||= 0
         @summary_totals[score] += 1
 

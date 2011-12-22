@@ -158,6 +158,45 @@ class ForteSets
     return_set
   end
 
+  # Given a set of pitches, return the complement set
+  #
+  # * *Parameters* :
+  #   - +set+ [Array] -> The set to complement 0 = c; 1 = c#...11 = b
+  # * *Returns* :
+  #   - [Array] -> The complement set as an Array
+  # * *Raises* :
+  #   - +ArgumentError+ -> if any mandatory value is nil
+  #
+
+  def complement_set( set )
+    raise ArgumentError, "set is mandatory" if set.nil?
+    raise ArgumentError, "set must be an Array" unless set.instance_of?(Array)
+
+    set.each { |pc| raise ArgumentError, "set values must be between 0 and 11" unless (0..11).include?(pc) }
+
+    Array.new(12) { |i| i }  - set
+  end
+
+  # Given a set of pitches, return a copy of the set with all element transposed so that the first element
+  # is set to zero.
+  #
+  # * *Parameters* :
+  #   - +set+ [Array] -> The set to transpose 0 = c; 1 = c#...11 = b
+  # * *Returns* :
+  #   - [Array] -> The zero position set as an Array
+  # * *Raises* :
+  #   - +ArgumentError+ -> if any mandatory value is nil
+  #
+
+  def zero_set( set )
+    raise ArgumentError, "set is mandatory" if set.nil?
+    raise ArgumentError, "set must be an Array" unless set.instance_of?(Array)
+
+    set[0] == 0 ? n = 0 :  n = 12 - set[0]
+    self.transpose_set(set, n)
+  end
+
+
   # Given a musical pitch, and how many 1/2 steps you want to transpose it, returns a new pitch at the new
   # transposition
   #
