@@ -49,12 +49,12 @@ Useful for counterpoint such as creating a canon, composing 12t, or deriving set
 we want to know the maximum or minimum material in the harmony.
 
 NOTE: Performance is an issue right now with larger number of voices and pitches since performance is measured
-      from: number of permutations =  x^(n-1) where x = number of columns and n is the number of groups.
+from: number of permutations =  x^(n-1) where x = number of columns and n is the number of groups.
 
 For example:  50 columns and 8 groups of one row in each group would generate 50^7 permutations
 or 781,250,000,000 possible rotations to search through.
 
-example: "row row row your boat"
+example: <b>"row row row your boat"</b>
 
     # From the beats of the melody.
     melody = [0, 0, 0, 4, 4, 4, 7, 7, 0, 7, 2, 0, 7, 3, 0, 0]
@@ -93,7 +93,7 @@ Output sample - one detail analysis of a possible rotation and the run summary:
     ...
 
     Score : # Instances
-    ===================
+    -------------------
         0 :    46
         1 :    18
         2 :    48
