@@ -6,8 +6,7 @@ composition, with some support for analysis - as defined in the various contexts
 
 Milton's machine provides:
 * MatrixAnalyser  - a class for analysing rows, including the ability to rotate them
-* ForteSets - a class that provides a dictionary of pitch class sets as cataloged by Forte, including a set of operations
-to act on them via modulo 12.
+* ForteSets - a class that provides a dictionary of pitch class sets as cataloged by Forte, including a set of operations to act on them via modulo 12.
 
 == Information
 
@@ -19,7 +18,6 @@ TBD - the Milton's Machine Wiki will have additional information including answe
 
 If you discover a problem with Milton's Machine, we would like to know about it.   Simply sign into github and report
 the issue.
-
 
 === RDocs
 
@@ -75,8 +73,8 @@ example: <b>"row row row your boat"</b>
     0.upto(11) do |i|
       #analysis_engine.add_search_set(major, i)            # TnI
       #analysis_engine.add_search_set(minor, i)            # Tn
-      analysis_engine.add_forte_set("3-11", i)             # Tn      <== or optionally use Forte Set names
-      analysis_engine.add_forte_set("3-11i", i)            # TnI     <== or optionally use Forte Set names
+      analysis_engine.add_forte_set("3-11", i)             # Tn      <== or optionally use Forte Set names like here
+      analysis_engine.add_forte_set("3-11i", i)            # TnI     <== or optionally use Forte Set names like here
     end
 
     analysis_engine.run_analysis
