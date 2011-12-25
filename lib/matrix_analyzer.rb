@@ -1,7 +1,7 @@
 require 'set'
 require './forte_sets'                      # temp tag here until we gem it
 
-# ============================================================================
+#
 # == Class: Matrix Analyzer
 #
 # Given an array where each element in the array is a group of rows - each row representing ordered musical pitches:
@@ -11,28 +11,18 @@ require './forte_sets'                      # temp tag here until we gem it
 #
 # Useful for counterpoint such as creating a canon, composing 12t, or deriving set related composition designs
 #
-# NOTE: Performance is an issue right now with larger number of voices and pitches since performance is measured
-# from: number of permutations =  x^(n-1) where x = number of columns and n is the number of groups.
+# @note Performance is an issue right now with larger number of voices and pitches since performance is measured
+# from: number of permutations =  x^(n-1) where x = number of columns and n is the number of groups.50 columns and
+# 8 groups of one row in each group would generate 50^7 permutations or 781,250,000,000 possible rotations to
+# search through.
 #
-# For example:  50 columns and 8 groups of one row in each group would generate 50^7 permutations
-# or 781,250,000,000 possible rotations to search through.
+# @example "row row row your boat"
 #
-# example: "row row row your boat"
+#    melody = [0, 0, 0, 4, 4, 4, 7, 7, 0, 7, 2, 0, 7, 3, 0, 0]     # from the beats of the melody
 #
-# From the beats of the melody:
-#
-#    melody = [0, 0, 0, 4, 4, 4, 7, 7, 0, 7, 2, 0, 7, 3, 0, 0]
-#
-# Sonorities to search for:
-#
-#    major = [0, 4, 7]    # 3-11i
-#    minor = [0, 3, 7]    # 3-11
-#
-# === Code example:
-#
-#    melody = [0, 0, 0, 4, 4, 4, 7, 7, 0, 7, 2, 0, 7, 3, 0, 0]
-#    major =  [0, 4, 7]
-#    minor =  [0, 3, 7]
+#    # Sonorities to search for
+#    major =  [0, 4, 7]                                            # 3-11i
+#    minor =  [0, 3, 7]                                            # 3-11
 #
 #    analysis_engine = MatrixAnalyzer.new
 #    analysis_engine.report_details=(true)
@@ -46,11 +36,11 @@ require './forte_sets'                      # temp tag here until we gem it
 #    0.upto(11) do |i|
 #      analysis_engine.add_search_set(major, i)                # TnI
 #      analysis_engine.add_search_set(minor, i)                # Tn
-#      #  analysis_engine.add_forte_set("3-11", i)             # Tn      <== or optionally use Forte Set names
-#      #  analysis_engine.add_forte_set("3-11i", i)            # TnI     <== or optionally use Forte Set names
+#      #  analysis_engine.add_forte_set("3-11", i)             # Tn  <== or optionally use Forte Set names like here
+#      #  analysis_engine.add_forte_set("3-11i", i)            # TnI
 #    end
 #
-#    analysis_engine.run_analysis
+#    analysis_engine.run_rotation_analysis
 #
 #    Output sample - one detail analysis of a possible rotation and the run summary:
 #
@@ -78,7 +68,7 @@ require './forte_sets'                      # temp tag here until we gem it
 # TODO Allow for horizontal searches
 # TODO Performance improvement - allow for start and stop rotation indexes so work can be broken up
 # TODO Performance improvement - parallel forking/threads, better algorithms etc...
-# =============================================================================
+#
 
 class MatrixAnalyzer
 
@@ -108,9 +98,9 @@ class MatrixAnalyzer
 
   # Constructor
   #
-  # @param minimax_score [Range] -> Minimum to maximum score to display
-  # @param report_details [Boolean] -> If true, show details, else summary only  default false
-  # @return [Object] -> a new MatrixAnalyzer Object
+  # @param [Range] minimax_score Minimum to maximum score to display
+  # @param [Boolean] report_details if true, show details, else summary only
+  # @return [Object] a new MatrixAnalyzer Object
 
   def initialize( minimax_score = Range.new(0, 99999999), report_details = false )
     @minimax_score     = minimax_score
@@ -124,9 +114,9 @@ class MatrixAnalyzer
 
   # Insert a row into the matrix of voices to search
   #
-  # @param group_id [Integer] -> The group id to add it to (1 - n)
-  # @param row [Array] -> An array of ordered pitches (voice)
-  # @param number_to_transpose [Integer] -> transpose this array Tn 0-11 default = 0
+  # @param [Integer] group_id The group id to add it to (1 - n)
+  # @param [Array] row an array of ordered pitches (voice)
+  # @param [Integer] number_to_transpose transpose this array Tn 0-11
   #
 
   def add_row( group_id, row, number_to_transpose = 0 )
@@ -136,8 +126,8 @@ class MatrixAnalyzer
 
   # Insert a set into the search dictionary
   #
-  # @param search_set [Array] -> The target set we are searching
-  # @param number_to_transpose [Integer] -> Transpose the submitted set + n (optional)
+  # @param [Array] search_set the target set we are searching
+  # @param [Integer] number_to_transpose transpose the submitted set + n
   #
 
   def add_search_set( search_set, number_to_transpose = 0 )
@@ -146,9 +136,9 @@ class MatrixAnalyzer
 
   # Insert a forte set into the search dictionary
   #
-  # @param forte_set_name [String] -> The target set name we are searching
-  # @param number_to_transpose [Integer] -> Transpose the submitted set + n (optional)
-  #
+  # @param [String] forte_set_name the target set name we are searching
+  # @param [Integer] number_to_transpose transpose the submitted set + n
+  # @raise [KeyError] forte_set could not be found
 
   def add_forte_set( forte_set_name, number_to_transpose = 0 )
     search_set = ForteSets.instance.get_set(forte_set_name)
@@ -157,17 +147,12 @@ class MatrixAnalyzer
     @search_sets << Set.new( ForteSets.instance.transpose_set(search_set, number_to_transpose) )
   end
 
-  # Run the analysis and print out the results
-  #
-  # Non recursive option is only there to compare performance of two coding techniques, and they are not all that
-  # different in performance, surprisingly. =(
-  #
-  # @param recursive [Boolean] -> true = run recursively (default) false = run experimental brute force
+  # Run the rotation_analysis and print out the results
   #
 
-  def run_analysis( recursive = true )
+  def run_rotation_analysis
     initialize_run
-    recursive == true ? rotate_group : rotate_experiment
+    rotate_group
     print_summary
   end
 
@@ -190,7 +175,7 @@ class MatrixAnalyzer
   # final vertical analysis for the current rotations; otherwise, just calls itself to process the next group in the
   # hierarchy.
   #
-  # @param level [integer] -> Depth/group indicator in recursion (optional)
+  # @param [integer] level depth/group indicator in recursion (optional)
   #
 
   def rotate_group( level = -1 )
@@ -223,7 +208,7 @@ class MatrixAnalyzer
     # calculate a score for each column.
 
     @groups[0][0].each_index do |column_id|        # Loop on number of number of columns
-      result_counts[column_id] = 0                   # Initialize counter for column
+      result_counts[column_id] = 0                 # Initialize counter for column
       sonority_to_test.clear
 
       # Slice through the voices of all groups and their rows to create a sonority to test.
@@ -254,7 +239,7 @@ class MatrixAnalyzer
   # score was 9 for the current rotation of the rows, summary_totals[9] would be incremented to reflect that a matrix
   # solution was found with score = 9
   #
-  # @param score [Integer] -> Total number of sets found in the current snapshot
+  # @param [Integer] score total number of sets found in the current snapshot
   #
 
   def accumulate_summary_totals( score )
@@ -264,13 +249,13 @@ class MatrixAnalyzer
 
   # Print out the details of each analysis we are looking for
   #
-  # @param result_counts [Array] -> An array of totals for each matrix column
-  # @param score [Integer] -> A cross total of this array for a final score
+  # @param [Array] result_counts An array of totals for each matrix column
+  # @param [Integer] score a cross total of this array for a final score
   #
 
   def print_details( result_counts, score )
     puts ('=' * 10) << "\n"
-    @groups.each_with_index { |group, n | group.each { |row| puts row.to_s << " Group " << (n + 1).to_s } }
+    @groups.each_with_index { |group, n | group.each { |row| puts "#{row} Group " << (n + 1).to_s } }
     puts  '-' *  (@groups[0][0].length * 3)
     puts "#{result_counts} Score"
     puts "\nTotal Score: #{score}\n"
@@ -292,99 +277,6 @@ class MatrixAnalyzer
     puts "\n\nScore : # Instances\n" << ("=" * 19)
     @summary_totals.each_with_index { |value, index| puts " %5d:%8d\n" % [index, value] unless value.nil? }
     puts "\n** End of Report"
-  end
-
-  # EXPERIMENTAL ONLY
-  #
-  # A NON-recursive SINGLE inline routine that emulates the same functionality of rotate_group() including all
-  # sub-calls. This is only here for experimenting with maximizing performance over recursive descent methods.
-  # Honestly, I haven't found any difference on larger matrix's yet.
-  #
-
-  def rotate_experiment
-    max_group_index       = @groups.length - 1
-    max_column_index      = @groups[0][0].length - 1
-    last_rotation_counter = Array.new(max_group_index + 1)
-    last_level_processed  = 0
-    current_level         = 1
-    rotation_counter      = 0
-    group                 = nil
-
-    sonority_to_test      = Set.new            # A work space for a vertical slice
-    result_counts         = Array.new          # Success counters for each column
-
-    while current_level > 0 do
-      # Fill work variables when first entering or returning to this level
-      unless current_level == last_level_processed
-        rotation_counter = last_rotation_counter.at(current_level)
-        rotation_counter ||= -1
-        group = @groups[current_level]
-      end
-
-      last_level_processed = current_level
-
-      # If no more columns to rotate then stop processing row...
-      if rotation_counter == max_column_index
-        last_rotation_counter[current_level] = -1                # Rewind
-        current_level -= 1                                       # Go up a level
-        next
-      end
-
-      @groups[current_level].each { |row| row.rotate!(-1) }
-      rotation_counter += 1
-
-      # Leaf row gets to analyze columns, otherwise go deeper.
-      unless current_level == max_group_index
-        last_rotation_counter[current_level] = rotation_counter  # Save index
-        current_level += 1                                       # Call
-        next
-      end
-
-      # BEGIN  merge analyze_sonorities() code run
-
-      # Loop on columns in the matrix and extract out the sonority. Compare that to the dictionary of vertical sets to
-      # calculate a score for each column.
-
-      @groups[0][0].each_index do |column_id|          # Loop on number of number of columns
-        result_counts[column_id] = 0                   # Initialize counter for column
-        sonority_to_test.clear
-
-        # Slice through the voices of all groups and their rows to create a sonority to test.
-        @groups.each_index do |group_id|
-          @groups[group_id].each_index { |row_id| sonority_to_test.add( @groups[group_id][row_id][column_id] ) }
-        end
-
-        # Search the dictionary of vertical sets we are looking for and increment column counter if found.
-        @search_sets.each { |set_to_search| result_counts[column_id] += 1 if set_to_search.subset?(sonority_to_test) }
-      end
-
-      # Accumulate a cross total of column result to create a final score for the current rotation snapshot.
-      score = result_counts.inject(0) { |sum, col_result| sum += col_result }
-
-      # If we meet the search criteria then add results to report totals and optionally print details.
-      if @minimax_score.include?(score)
-        @summary_totals[score] ||= 0
-        @summary_totals[score] += 1
-
-        # Optionally print details of this rotation snapshot.
-        if @report_details
-          puts ('=' * 10) << "\n"
-          @groups.each_with_index { |g, n | g.each { |row| puts row.to_s << " Group " << (n + 1).to_s } }
-          puts  '-' *  (@groups[0][0].length * 3)
-          puts "#{result_counts} Score"
-          puts "\nTotal Score: #{score} \n"
-        end
-      end
-
-      unless @report_details
-        @rotation_count += 1
-        print "\r\e#{@rotation_count} of #{@maximum_rotations} processed in experimental mode..."
-        $stdout.flush
-      end
-
-      # END merge of analyze_sonorities() code run
-
-    end
   end
 
 end

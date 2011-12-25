@@ -1,6 +1,5 @@
 require 'singleton'
 
-# ============================================================================
 # == Class: Forte Sets (Singleton)
 #
 # A dictionary of Forte sets indexed by name, as well as some common operations
@@ -11,7 +10,7 @@ require 'singleton'
 #
 #    @dictionary[forte_set_name] = [ [<set pitches>], [<interval vector>], <description> ]
 #
-# === Code Example:
+# @example Retrieving Sets
 #
 #    major_scale = ForteSets.instance.get_set("7-35")
 #    puts major_scale
@@ -30,7 +29,6 @@ require 'singleton'
 #
 # TODO allow name lookup by an array representing the set.  Should normalize, make prime etc.
 #
-# =============================================================================
 
 class ForteSets
   include Singleton
@@ -45,7 +43,7 @@ class ForteSets
 
   # Constructor
   #
-  # @return [Object] -> a new ForteSets Object
+  # @return [Object] a new ForteSets Object
   #
 
   def initialize
@@ -57,67 +55,67 @@ class ForteSets
 
   # Given the name of a forte set, will return an array of pitches representing the prime set
   #
-  # @param name [String] -> the Forte name of the set to retrieve
-  # @return [Array] or [nil]  -> a copy of the forte set from the dictionary if found
+  # @param [String] forte_set_name the Forte name of the set to retrieve
+  # @return [Array] a copy of the forte set from the dictionary if found
   #
 
-  def get_set( name )
-    forte_array = @dictionary[name]
-    forte_array.nil? ? nil : Array.new( forte_array[0] )        # Set ex [0,2,4,5]
+  def get_set( forte_set_name )
+    forte_array = @dictionary[forte_set_name]
+    forte_array.nil? ? nil : forte_array[0].clone
   end
 
   # Given the name of a set, will return an array representing the interval vector of the set
   #
-  # @param name [String] -> the Forte name of the set who's interval vector we want
-  # @return [Array] or [nil] -> a copy of the forte set's interval vector from the dictionary if found
+  # @param [String] forte_set_name the Forte name of the set who's interval vector we want
+  # @return [Array] a copy of the forte set's interval vector from the dictionary if found
   #
 
-  def get_vector( name )
-    forte_array = @dictionary[name]
-    forte_array.nil? ? nil : Array.new( forte_array[1] )         # interval vector
+  def get_vector( forte_set_name )
+    forte_array = @dictionary[forte_set_name]
+    forte_array.nil? ? nil : forte_array[1].clone
   end
 
   # Given the name of a set, will return a long text description of the set
   #
-  # @param name [String] -> the Forte name of the set who's description we want
-  # @return [String] or [nil] -> a copy of the prime set's description from the dictionary if found
+  # @param [String] forte_set_name the Forte name of the set who's description we want
+  # @return [String] a copy of the prime set's description from the dictionary if found
   #
 
-  def get_description( name )
-    forte_array = @dictionary[name]
-    forte_array.nil? ? nil : String.new( forte_array[2] )        # Description
+  def get_description( forte_set_name )
+    forte_array = @dictionary[forte_set_name]
+    forte_array.nil? ? nil : forte_array[2].clone
   end
 
   # Given a set of pitches, and how many 1/2 steps you want to transpose it, returns a new set at the new
   # transposition
   #
-  # @param set_to_transpose [Array] -> the set which we want to transpose
-  # @param number_to_transpose [Integer] -> number of half steps between 0 - 11
-  # @return [Array] -> a copy of the set transposed to the new Tn
+  # @param [Array] set_to_transpose the set which we want to transpose
+  # @param [Integer] number_to_transpose number of half steps between 0 - 11
+  # @return [Array] a copy of the set transposed to the new Tn
   #
 
   def transpose_set( set_to_transpose, number_to_transpose = 0 )
-    return_set = Array.new( set_to_transpose )
+    return_set = set_to_transpose.clone
     return_set.collect! { |pc| pc = transpose_pitch_class(pc, number_to_transpose) }
     return_set
   end
 
   # Given a set of pitches, return the sets inversion
   #
-  # @param set_to_invert [Array] -> the set which we want to invert
-  # @return [Array] -> a copy of the set inverted
+  # @param [Array] set_to_invert the set which we want to invert
+  # @return [Array] a copy of the set inverted
   #
 
   def invert_set( set_to_invert )
-    return_set = Array.new( set_to_invert )
+    return_set = set_to_invert.clone
     return_set.collect! { |pc| pc = invert_pitch_class(pc) }
     return_set
   end
 
   # Given a set of pitches, return the complement set
   #
-  # @param set_to_complement [Array] -> the set who's complement we desire
-  # @return [Array] -> the complement set
+  # @param [Array] set_to_complement the set who's complement we desire
+  # @return [Array] the complement set
   #
 
   def complement_set( set_to_complement )
@@ -127,45 +125,36 @@ class ForteSets
   # Given a set of pitches, return a copy of the set with all element transposed so that the first element
   # is set to zero.
   #
-  # @param set_to_zero_out [Array] -> the set to set to zero.
-  # @return [Array] -> the zero transposed set
+  # @param [Array] set_to_zero_out the set to set to zero.
+  # @return [Array] the zero transposed set
   #
 
   def zero_set( set_to_zero_out )
-    set_to_zero_out[0] == 0 ? n = 0 :  n = 12 - set_to_zero_out[0]
-    transpose_set(set_to_zero_out, n)
+    number_to_transpose = 0
+    set_to_zero_out[0] == 0 ? number_to_transpose = 0 :  number_to_transpose = 12 - set_to_zero_out[0]
+    transpose_set(set_to_zero_out, number_to_transpose)
   end
-
 
   # Returns the most compact order of a set
   #
-  # @param set_to_normalize [Array] -> the set we wish to normalize the order
-  # @return [Array] -> a copy of the set normalized
+  # @param [Array] set_to_normalize the set we wish to normalize the order
+  # @return [Array] a copy of the set normalized
   #
 
   def normalize_set( set_to_normalize )
-    winner = Array(set_to_normalize)
-    last_index = winner.length - 1
-    return winner if last_index < 1
+    winner = set_to_normalize.clone
 
-    winner.sort!()
+    winner.sort!
+    winner.reverse!
+    working_set = winner.clone
 
-    # Create all the permutations to compare for winners by rotating it.
-    permutations = Array.new
-    working_set = Array.new(winner)
-    0.upto(last_index - 1 ) { permutations <<  Array.new( working_set.rotate!(1) ) }
+    # Pick the best winner out of the lot of permutations
+    0.upto(winner.length - 2 ) do
+      compare_set =  working_set.rotate!(1).clone              # Get a new permutation to compare
 
-    # Pick the best winner out of the lot
-    permutations.each do |compare_set|
-
-      working_last_index = last_index
-      while (working_last_index > 0 ) do
-        winner_interval =  winner[working_last_index] -  winner[0]
-        compare_interval = compare_set[working_last_index] - compare_set[0]
-        winner_interval += 12 if winner_interval < 0
-        compare_interval += 12 if compare_interval < 0
-
-        #  Compare outer intervals...winner is smaller of either previous winner or this permutation.
+      working_set.each_index do  |working_last_index|          # Work backwards checking largest interval edge
+        winner_interval =  (winner[working_last_index] -  winner.at(-1)) % 12
+        compare_interval = (compare_set[working_last_index] - compare_set.at(-1)) % 12
 
         if compare_interval < winner_interval             # new winner
           winner = compare_set.clone
@@ -173,20 +162,20 @@ class ForteSets
         elsif compare_interval > winner_interval          # old winner is still ruling
           break
         end
-
-        working_last_index -= 1                           # a tie, so go back and look at second to last interval.
       end
+
     end
 
+    winner.reverse!
     winner
   end
 
   # Given a musical pitch, and how many 1/2 steps you want to transpose it, returns a new pitch at the new
   # transposition
   #
-  # @param pitch_class [Integer] -> the pitch to transpose ()0-11)
-  # @param number_to_transpose [Integer] -> the Tn we wish to transpose it to
-  # @return [Integer] -> a copy of the pitch at the new Tn
+  # @param [Integer] pitch_class the pitch to transpose ()0-11)
+  # @param [Integer] number_to_transpose the Tn we wish to transpose it to
+  # @return [Integer] a copy of the pitch at the new Tn
   #
 
   def transpose_pitch_class( pitch_class, number_to_transpose = 0 )
@@ -195,8 +184,8 @@ class ForteSets
 
   # Given a musical pitch, return the inversion of the pitch
   #
-  # @param pitch_class [Integer] -> the pitch to invert ()0-11)
-  # @return [Integer] -> a copy of the pitch at the new inversion
+  # @param [Integer] pitch_class the pitch to invert ()0-11)
+  # @return [Integer] a copy of the pitch at the new inversion
   #
 
   def invert_pitch_class( pitch_class )
@@ -205,8 +194,8 @@ class ForteSets
 
   # Convert String representation of a pitch to an Integer representation
   #
-  # @param pitch_class [Integer] or [String]-> the pitch to convert
-  # @return [Integer] -> a copy of the pitch translated to Integer representation
+  # @param [String] pitch_class the pitch to convert
+  # @return [Integer]  a copy of the pitch translated to Integer representation
   #
 
   def convert_from_alpha( pitch_class )
@@ -219,8 +208,8 @@ class ForteSets
 
   # Convert Integer representation of a pitch to a String representation
   #
-  # @param pitch_class [Integer] -> the pitch to convert
-  # @return [String] -> a copy of the pitch translated to a string representation
+  # @param [Integer] pitch_class the pitch to convert
+  # @return [String] a copy of the pitch translated to a string representation
   #
 
   def convert_to_alpha( pitch_class )
@@ -235,7 +224,7 @@ class ForteSets
 
   # Loads the dictionary from a CSV file into a hash dictionary
   #
-  # Note:  it's a simple table so we don't use any special libraries like csv, faster_csv, ccsv, CSVScan  etc.
+  # @note  it's a simple table so we don't use any special libraries like csv, faster_csv, ccsv, CSVScan  etc.
   #
 
   def load_dictionary
@@ -243,10 +232,10 @@ class ForteSets
     file.each_line("\n") do |row|
       columns = row.split("\t")
       set_name  =  columns[0]
-      prime_set =  columns[1].split('')
+      prime_set =  columns[1].split
       prime_set.collect! { |pc| pc = convert_from_alpha(pc) }
 
-      interval_vector =  columns[2].split('')
+      interval_vector =  columns[2].split
       interval_vector.collect! { |pc| pc = convert_from_alpha(pc) }
 
       description = columns[3]
