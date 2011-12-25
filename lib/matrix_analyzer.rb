@@ -2,7 +2,7 @@ require 'set'
 require './forte_sets'                      # temp tag here until we gem it
 
 # ============================================================================
-# Class: Matrix Analyzer
+# == Class: Matrix Analyzer
 #
 # Given an array where each element in the array is a group of rows - each row representing ordered musical pitches:
 # Permutate each group of rows in parallel using rotation.  After each rotation search each column (intersecting all
@@ -12,10 +12,10 @@ require './forte_sets'                      # temp tag here until we gem it
 # Useful for counterpoint such as creating a canon, composing 12t, or deriving set related composition designs
 #
 # NOTE: Performance is an issue right now with larger number of voices and pitches since performance is measured
-#       from: number of permutations =  x^(n-1) where x = number of columns and n is the number of groups.
+# from: number of permutations =  x^(n-1) where x = number of columns and n is the number of groups.
 #
-#       For example:  50 columns and 8 groups of one row in each group would generate 50^7 permutations
-#                     or 781,250,000,000 possible rotations to search through.
+# For example:  50 columns and 8 groups of one row in each group would generate 50^7 permutations
+# or 781,250,000,000 possible rotations to search through.
 #
 # example: "row row row your boat"
 #
@@ -28,7 +28,7 @@ require './forte_sets'                      # temp tag here until we gem it
 #    major = [0, 4, 7]    # 3-11i
 #    minor = [0, 3, 7]    # 3-11
 #
-# == Code example:
+# === Code example:
 #
 #    melody = [0, 0, 0, 4, 4, 4, 7, 7, 0, 7, 2, 0, 7, 3, 0, 0]
 #    major =  [0, 4, 7]
@@ -57,28 +57,27 @@ require './forte_sets'                      # temp tag here until we gem it
 #    [0, 0, 0, 4, 4, 4, 7, 7, 0, 7, 2, 0, 7, 3, 0, 0]  Group 1 <== original melody
 #    [4, 4, 7, 7, 0, 7, 2, 0, 7, 3, 0, 0, 0, 0, 0, 4]  Group 2 <== melody rotated 12x
 #    [0, 7, 2, 0, 7, 3, 0, 0, 0, 0, 0, 4, 4, 4, 7, 7]  Group 3 <== melody rotated 8x
-#    ---------
+#    ----------
 #    [0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1]  Score  <== the # maj/min sets (analysis)
 #    Total Score: 6
 #
 #    ...
 #    Score : # Instances
-#    ===================
+#    -------------------
 #        0 :    46
 #        1 :    18
 #        2 :    48
 #        3 :    72
 #        4 :    24
 #        5 :    42
-#        6 :     6  <== most saturated found = 6 solutions
-#                       ex: the detail above
+#        6 :     6  <== most saturated found = 6 solutions ex: the detail above
 #
-#    ex:  there are 42 permutation solutions that have 5 columns holding major or minor chords
+# ex:  there are 42 permutation solutions that have 5 columns holding major or minor chords
 #
-#   TODO More report filtering options and statistic measurements
-#   TODO Allow for horizontal searches
-#   TODO Performance improvement - allow for start and stop rotation indexes so work can be broken up
-#   TODO Performance improvement - parallel forking/threads, better algorithms etc...
+# TODO More report filtering options and statistic measurements
+# TODO Allow for horizontal searches
+# TODO Performance improvement - allow for start and stop rotation indexes so work can be broken up
+# TODO Performance improvement - parallel forking/threads, better algorithms etc...
 # =============================================================================
 
 class MatrixAnalyzer
@@ -109,22 +108,11 @@ class MatrixAnalyzer
 
   # Constructor
   #
-  # all parameters are optional
-  #
-  # * *Parameters*    :
-  #   - +minimax_score+ [Range] -> Minimum to maximum score to display
-  #   - +max_score+ [Integer] -> Maximum score to display
-  #   - +report_details+ [Boolean] -> If true, show details, else summary only  default false
-  # * *Returns* :
-  #   - [Object] -> a new MatrixAnalyzer Object
-  # * *Raises* :
-  #   - +ArgumentError+ -> if any mandatory value is nil or wrong type
-  #
+  # @param minimax_score [Range] -> Minimum to maximum score to display
+  # @param report_details [Boolean] -> If true, show details, else summary only  default false
+  # @return [Object] -> a new MatrixAnalyzer Object
 
   def initialize( minimax_score = Range.new(0, 99999999), report_details = false )
-    raise ArgumentError, "minimax_score must a Range object" unless minimax_score.instance_of?(Range)
-    raise ArgumentError, "report_details must a boolean value" unless report_details.instance_of?(TrueClass) ||
-                                                                      report_details.instance_of?(FalseClass)
     @minimax_score     = minimax_score
     @report_details    = report_details
     @groups            = Array.new
@@ -136,71 +124,37 @@ class MatrixAnalyzer
 
   # Insert a row into the matrix of voices to search
   #
-  # * *Parameters* :
-  #   - +group_id+ [Integer] -> The group id to add it to (1 - n)
-  #   - +row+ [Array] -> An array of ordered pitches (voice)
-  #   - +transpose+ [Integer] -> transpose this array Tn 0-11 default = 0
-  # * *Returns* :
-  #   - none
-  # * *Raises* :
-  #   - +ArgumentError+ -> if any mandatory value is nil
+  # @param group_id [Integer] -> The group id to add it to (1 - n)
+  # @param row [Array] -> An array of ordered pitches (voice)
+  # @param number_to_transpose [Integer] -> transpose this array Tn 0-11 default = 0
   #
 
-  def add_row( group_id, row, transpose = 0 )
-    raise ArgumentError, "group_id is mandatory" if group_id.nil?
-    raise ArgumentError, "group_id must an integer" unless group_id.instance_of?(Fixnum)
-    raise ArgumentError, "group id must be > 0" unless group_id > 0
-    raise ArgumentError, "row is mandatory" if row.nil?
-    raise ArgumentError, "row must an Array object" unless row.instance_of?(Array)
-    raise ArgumentError, "transpose must an integer" unless transpose.instance_of?(Fixnum)
-    raise ArgumentError, "transpose must be between 0 and 11" unless (0..11).include?(transpose)
-
+  def add_row( group_id, row, number_to_transpose = 0 )
     @groups[group_id - 1] ||= Array.new
-    @groups[group_id - 1] << ForteSets.instance.transpose_set(row, transpose)
+    @groups[group_id - 1] << ForteSets.instance.transpose_set(row, number_to_transpose)
   end
 
   # Insert a set into the search dictionary
   #
-  # * *Parameters* :
-  #   - +search_set+ [Array] -> The target set we are searching
-  #   - +transpose+ [Integer] -> Transpose the submitted set + n (optional)
-  # * *Returns* :
-  #   - none
-  # * *Raises* :
-  #   - +ArgumentError+ -> if any mandatory value is nil or wrong type
+  # @param search_set [Array] -> The target set we are searching
+  # @param number_to_transpose [Integer] -> Transpose the submitted set + n (optional)
   #
 
-  def add_search_set( search_set, transpose = 0 )
-    raise ArgumentError, "search_set is mandatory" if search_set.nil?
-    raise ArgumentError, "search_set must an Array object" unless search_set.instance_of?(Array)
-    raise ArgumentError, "transpose must an integer" unless transpose.instance_of?(Fixnum)
-    raise ArgumentError, "transpose must be between 0 and 11" unless (0..11).include?(transpose)
-
-    @search_sets << Set.new( ForteSets.instance.transpose_set(search_set, transpose) )
+  def add_search_set( search_set, number_to_transpose = 0 )
+    @search_sets << Set.new( ForteSets.instance.transpose_set(search_set, number_to_transpose) )
   end
 
   # Insert a forte set into the search dictionary
   #
-  # * *Parameters* :
-  #   - +forte_set+ [String] -> The target set name we are searching
-  #   - +transpose+ [Integer] -> Transpose the submitted set + n (optional)
-  # * *Returns* :
-  #   - none
-  # * *Raises* :
-  #   - +ArgumentError+ -> if any mandatory value is nil or wrong type
-  #   - +KeyError+ -> could not find forte_set
+  # @param forte_set_name [String] -> The target set name we are searching
+  # @param number_to_transpose [Integer] -> Transpose the submitted set + n (optional)
   #
 
-  def add_forte_set( forte_set, transpose = 0 )
-    raise ArgumentError, "forte_set is mandatory" if forte_set.nil?
-    raise ArgumentError, "forte_set must a String object" unless forte_set.instance_of?(String)
-    raise ArgumentError, "transpose must an integer" unless transpose.instance_of?(Fixnum)
-    raise ArgumentError, "transpose must be between 0 and 11" unless (0..11).include?(transpose)
-
-    search_set = ForteSets.instance.get_set(forte_set)
+  def add_forte_set( forte_set_name, number_to_transpose = 0 )
+    search_set = ForteSets.instance.get_set(forte_set_name)
     raise KeyError, "forte_set could not be found" if search_set.nil?
 
-    @search_sets << Set.new( ForteSets.instance.transpose_set(search_set, transpose) )
+    @search_sets << Set.new( ForteSets.instance.transpose_set(search_set, number_to_transpose) )
   end
 
   # Run the analysis and print out the results
@@ -208,33 +162,20 @@ class MatrixAnalyzer
   # Non recursive option is only there to compare performance of two coding techniques, and they are not all that
   # different in performance, surprisingly. =(
   #
-  # * *Parameters* :
-  #   - +recursive+ [Boolean] -> true = run recursively (default) false = run experimental brute force
-  # * *Returns* :
-  #   - none
-  # * *Raises* :
-  #   - +ArgumentError+ -> if any mandatory value is nil or wrong type
+  # @param recursive [Boolean] -> true = run recursively (default) false = run experimental brute force
   #
 
   def run_analysis( recursive = true )
-    raise ArgumentError, "recursive must a boolean value" unless(recursive.instance_of?(TrueClass) ||
-                                                                 recursive.instance_of?(FalseClass))
-    self.initialize_run
-    recursive == true ? self.rotate_group : self.rotate_experiment
-    self.print_summary
+    initialize_run
+    recursive == true ? rotate_group : rotate_experiment
+    print_summary
   end
 
   protected
 
   # Initialize the environment before the analysis is run
   #
-  # * *Parameters* :
-  #   - none
-  # * *Returns* :
-  #   - none
-  # * *Raises* :
-  #   - none
-  #
+
   def initialize_run
     @summary_totals.clear
     @rotation_count = 0
@@ -249,19 +190,14 @@ class MatrixAnalyzer
   # final vertical analysis for the current rotations; otherwise, just calls itself to process the next group in the
   # hierarchy.
   #
-  # * *Parameters* :
-  #   - +level+ [integer] -> Depth/group indicator in recursion (optional)
-  # * *Returns* :
-  #   - none
-  # * *Raises* :
-  #   - none
+  # @param level [integer] -> Depth/group indicator in recursion (optional)
   #
 
   def rotate_group( level = -1 )
     level += 1
 
     if level == 0                                            # First group always remains static
-      self.rotate_group(level)                               # Recursive call to process next group of rows
+      rotate_group(level)                               # Recursive call to process next group of rows
     else
       # Rotate each pitch to the right for each row in this group.  If its the last group then analyze the verticals
       # in each column across all groups; otherwise recursively call to process next group of rows.
@@ -270,20 +206,13 @@ class MatrixAnalyzer
       max_column_index  = @groups[0][0].length - 1
       0.upto(max_column_index) do
         @groups[level].each { |row| row.rotate!(-1) }
-        level == max_group_index ? self.analyze_sonorities : self.rotate_group(level)
+        level == max_group_index ? analyze_sonorities : rotate_group(level)
       end
     end
   end
 
   # Step through each column in the matrix of rotated rows (voices) and look for patterns of sets from a dictionary
   # to create a score for each column (found) and for the entire matrix of rows (total found).
-  #
-  # * *Parameters* :
-  #   - none
-  # * *Returns* :
-  #   - none
-  # * *Raises* :
-  #   - none
   #
 
   def analyze_sonorities
@@ -311,13 +240,13 @@ class MatrixAnalyzer
 
     # If we meet the search criteria then add results to report totals and optionally print details.
     if @minimax_score.include?(score)
-      self.accumulate_summary_totals(score)
+      accumulate_summary_totals(score)
 
       # Optionally print details of this rotation snapshot.
-      self.print_details(result_counts, score) if @report_details
+      print_details(result_counts, score) if @report_details
     end
 
-    self.print_rotation_count unless @report_details
+    print_rotation_count unless @report_details
 
   end
 
@@ -325,12 +254,7 @@ class MatrixAnalyzer
   # score was 9 for the current rotation of the rows, summary_totals[9] would be incremented to reflect that a matrix
   # solution was found with score = 9
   #
-  # * *Parameters* :
-  #   - +score+ [Integer] -> Total number of sets found in the current snapshot
-  # * *Returns* :
-  #   - none
-  # * *Raises* :
-  #   - none
+  # @param score [Integer] -> Total number of sets found in the current snapshot
   #
 
   def accumulate_summary_totals( score )
@@ -340,31 +264,19 @@ class MatrixAnalyzer
 
   # Print out the details of each analysis we are looking for
   #
-  # * *Parameters* :
-  #   - +result_counts+ [Array] -> An array of totals for each matrix column
-  #   - +score+ [Integer] -> A cross total of this array for a final score
-  # * *Returns* :
-  #   - none
-  # * *Raises* :
-  #   - none
+  # @param result_counts [Array] -> An array of totals for each matrix column
+  # @param score [Integer] -> A cross total of this array for a final score
   #
 
   def print_details( result_counts, score )
     puts ('=' * 10) << "\n"
     @groups.each_with_index { |group, n | group.each { |row| puts row.to_s << " Group " << (n + 1).to_s } }
     puts  '-' *  (@groups[0][0].length * 3)
-    puts result_counts.to_s << " Score"
-    puts "\nTotal Score: " << score.to_s << "\n"
+    puts "#{result_counts} Score"
+    puts "\nTotal Score: #{score}\n"
   end
 
   # Print out a progress indicator of how many rotations / permutations have been processed and how many are remaining.
-  #
-  # * *Parameters* :
-  #   - none
-  # * *Returns* :
-  #   - none
-  # * *Raises* :
-  #   - none
   #
 
   def print_rotation_count
@@ -374,13 +286,6 @@ class MatrixAnalyzer
   end
 
   # Prints a summary section for the entire report
-  #
-  # * *Parameters* :
-  #   - none
-  # * *Returns* :
-  #   - none
-  # * *Raises* :
-  #   - none
   #
 
   def print_summary
@@ -394,13 +299,6 @@ class MatrixAnalyzer
   # A NON-recursive SINGLE inline routine that emulates the same functionality of rotate_group() including all
   # sub-calls. This is only here for experimenting with maximizing performance over recursive descent methods.
   # Honestly, I haven't found any difference on larger matrix's yet.
-  #
-  # * *Parameters* :
-  #   - none
-  # * *Returns* :
-  #   - none
-  # * *Raises* :
-  #   - none
   #
 
   def rotate_experiment
@@ -473,8 +371,8 @@ class MatrixAnalyzer
           puts ('=' * 10) << "\n"
           @groups.each_with_index { |g, n | g.each { |row| puts row.to_s << " Group " << (n + 1).to_s } }
           puts  '-' *  (@groups[0][0].length * 3)
-          puts result_counts.to_s << " Score"
-          puts "\nTotal Score: " << score.to_s << "\n"
+          puts "#{result_counts} Score"
+          puts "\nTotal Score: #{score} \n"
         end
       end
 
@@ -490,25 +388,3 @@ class MatrixAnalyzer
   end
 
 end
-#
-#melody = [0, 0, 0, 4, 4, 4, 7, 7, 0, 7, 2, 0, 7, 3, 0, 0]
-#major =  [0, 4, 7]
-#minor =  [0, 3, 7]
-#
-#analysis_engine = MatrixAnalyzer.new
-#analysis_engine.report_details=(true)
-#
-## First add the rows.  Three voices = triadic
-#analysis_engine.add_row(1, melody)
-#analysis_engine.add_row(2, melody)
-#analysis_engine.add_row(3, melody)
-#
-## Then, create all transpositions of sets to search for:
-#0.upto(11) do |i|
-#  #analysis_engine.add_forte_set("3-11", i)     # Tn
-#  #analysis_engine.add_forte_set("3-11i", i)     # TnI
-#  analysis_engine.add_search_set(major, i)     # Tn
-#  analysis_engine.add_search_set(minor, i)     # TnI
-#end
-#
-#analysis_engine.run_analysis
