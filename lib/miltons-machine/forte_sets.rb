@@ -150,23 +150,58 @@ class ForteSets
 
     # Pick the best winner out of the lot of permutations
     0.upto(winner.length - 2 ) do
-      compare_set =  working_set.rotate!(1).clone              # Get a new permutation to compare
+      winner = compare_compact_sets(winner, working_set.rotate!(1) )
+     end
 
-      working_set.each_index do  |working_last_index|          # Work backwards checking largest interval edge
-        winner_interval =  (winner[working_last_index] -  winner.at(-1)) % 12
-        compare_interval = (compare_set[working_last_index] - compare_set.at(-1)) % 12
+    winner.reverse
+  end
 
-        if compare_interval < winner_interval             # new winner
-          winner = compare_set.clone
-          break
-        elsif compare_interval > winner_interval          # old winner is still ruling
-          break
-        end
+  # Normalize and zero down the set
+  #
+  # @param [Array] set_to_reduce the set we wish to normalize and zero down
+  # @return [Array] a copy of the set reduced
+  #
+
+  def reduce_set( set_to_reduce )
+    zero_set(normalize_set(set_to_reduce))
+  end
+
+  # Return the prime version of the set
+  #
+  # @param [Array] set_to_prime the set we wish to find the prime form for
+  # @return [Array] the prime version of the set or its inversion
+  #
+
+  def prime_set( set_to_prime )
+    prime_form = zero_set(normalize_set(set_to_prime))
+    inverted_form = zero_set(normalize_set(invert_set(set_to_prime)))
+    compare_compact_sets(prime_form.reverse, inverted_form.reverse).reverse
+  end
+
+  # Compare two sets and return the most compact version
+  #
+  # @note going in its assumed the sets have been sorted and put in descending order...
+  #
+  # @param [Array] compare_set1 the first set to compare
+  # @param [Array] compare_set2 the second set to compare
+  # @return [Array] the most compact form of the two
+  #
+  def compare_compact_sets( compare_set1, compare_set2 )
+
+    winner = compare_set1.clone      # Assume set 1 is the winner going in.
+
+    # Work backwards checking largest interval edge
+    compare_set2.each_index do |working_last_index|
+      compare_interval1 = (compare_set1[working_last_index] - compare_set1.at(-1)) % 12
+      compare_interval2 = (compare_set2[working_last_index] - compare_set2.at(-1)) % 12
+
+      if compare_interval2 == compare_interval1
+        next                                                  # equal, so loop back for next outer interval
+      elsif compare_interval2 < compare_interval1             # new winner else assume #1 is good enough.
+        winner = compare_set2.clone
       end
-
+      break
     end
-
-    winner.reverse!
     winner
   end
 
