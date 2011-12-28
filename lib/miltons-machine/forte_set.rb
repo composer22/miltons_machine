@@ -99,7 +99,7 @@ class ForteSet < Array
     working_set = winner.clone
 
     # Pick the best winner out of the lot of permutations
-    0.upto(winner.length - 2 ) do
+    0.upto(length - 2 ) do
       winner = winner.compare_compact_sets( working_set.rotate!(1) )
      end
 
@@ -117,7 +117,7 @@ class ForteSet < Array
     working_set = clone
 
     # Pick the best winner out of the lot of permutations
-    0.upto(self.length - 2 ) do
+    0.upto(length - 2 ) do
       self[] = compare_compact_sets( working_set.rotate!(1) )
      end
 
@@ -164,7 +164,7 @@ class ForteSet < Array
     prime_form = normalize_set.zero_set
     inverted_form =  invert_set.normalize_set.zero_set
     prime_form.reverse!
-    self[]  = prime_form.compare_compact_sets(inverted_form.reverse!).reverse!
+    self[] = prime_form.compare_compact_sets(inverted_form.reverse!).reverse!
     self
   end
 

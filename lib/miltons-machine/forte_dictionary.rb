@@ -99,10 +99,11 @@ class ForteDictionary
     file = File.new(FORTE_DICTIONARY_CSV, 'r')
     file.each_line("\n") do |row|
       columns = row.split("\t")
-      set_name  =  columns[0]
+
+      set_name        = columns[0]
       prime_set       = ForteSet.new( columns[1].split('') ).convert_set_from_alpha!
       interval_vector = ForteSet.new( columns[2].split('') ).convert_set_from_alpha!
-      description = columns[3]
+      description     = columns[3]
 
       @dictionary[set_name] = Array.new( [prime_set, interval_vector, description] )
     end
