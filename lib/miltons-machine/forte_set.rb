@@ -1,26 +1,26 @@
 #
 # == Class: Forte Set
 #
-# An extention to the basic Array class of Ruby to allow for modulus 12 operations and transformations for musical set
-# theoretics.
+# An extention to the basic Array class of Ruby to allow for modulus 12 operations and transformations related to
+# musical set theoretics.
 #
 # @example  create and transpose a set
 #
 #   major_set = ForteSet.new([0, 4, 7])
-#   major_set.transpose_set!(3)
+#   major_set.transpose_mod12!(3)
 #   puts major_set     <-- should print out [3, 7, 10]
 #
-#
+# TODO Add method to allow for subset search with an array of forte sets
 
 class ForteSet < Array
 
   # Returns a copy of the set at a new transposition
   #
   # @param [Integer] number_to_transpose number of half steps between 0 - 11
-  # @return [Array] a copy of the set transposed to the new Tn
+  # @return [ForteSet] a copy of the set transposed to the new Tn
   #
 
-  def transpose_set( number_to_transpose = 0 )
+  def transpose_mod12( number_to_transpose = 0 )
     return_set = clone
     return_set.collect! { |pc| pc = transpose_pitch_class(pc, number_to_transpose) }
   end
@@ -28,177 +28,179 @@ class ForteSet < Array
   # Transposes the set in place and returns a reference to the set at the new transposition
   #
   # @param [Integer] number_to_transpose number of half steps between 0 - 11
-  # @return [Array] a reference to the set (not a shallow copy)
+  # @return [ForteSet] a reference to the transposed set
   #
 
-  def transpose_set!( number_to_transpose = 0 )
+  def transpose_mod12!( number_to_transpose = 0 )
     collect! { |pc| pc = transpose_pitch_class(pc, number_to_transpose) }
   end
 
   # Return the inversion of this set
   #
-  # @return [Array] a copy of the set inverted
+  # @return [ForteSet] a copy of the set inverted
   #
 
-  def invert_set
+  def invert_mod12
     return_set = clone
     return_set.collect! { |pc| pc = invert_pitch_class(pc) }
   end
 
   # Invert the set in place and return a reference
   #
-  # @return [Array] a reference to the inverted set
+  # @return [ForteSet] a reference to the inverted set
   #
 
-  def invert_set!
+  def invert_mod12!
     collect! { |pc| pc = invert_pitch_class(pc) }
   end
 
   # Return the complement of this set
   #
-  # @return [Array] the complement set
+  # @return [ForteSet] the complement set
   #
 
-  def complement_set
-    Array.new(12) { |i| i }  - self
+  def complement_mod12
+    ForteSet.new(12) { |i| i }  - self
+  end
+
+  # Replace with the complement of this set
+  #
+  # @return [ForteSet] a reference to the complemented set
+  #
+
+  def complement_mod12!
+    self[] = ForteSet.new(12) { |i| i }  - self
+    self
   end
 
   # Return a copy of the set with all elements transposed so that the first element is set to zero.
   #
-  # @return [Array] the zero transposed set
+  # @return [ForteSet] the zero transposed set
   #
 
-  def zero_set
+  def zero_mod12
     number_to_transpose = 0
-    self[0] == 0 ? number_to_transpose = 0 :  number_to_transpose = 12 - self[0]
-    transpose_set(number_to_transpose)
+    self[0] == 0 ? number_to_transpose = 0 : number_to_transpose = 12 - self[0]
+    transpose_mod12(number_to_transpose)
   end
 
   # Zero the set in place, so that all element transposed so that the first element is set to zero. Return a reference
   # to the result.
   #
-  # @return [Array] a copy of the zero transposed set
+  # @return [ForteSet] a reference to the zero transposed set
   #
 
-  def zero_set!
+  def zero_mod12!
     number_to_transpose = 0
     self[0] == 0 ? number_to_transpose = 0 :  number_to_transpose = 12 - self[0]
-    transpose_set!(number_to_transpose)
+    transpose_mod12!(number_to_transpose)
   end
 
   # Returns the most compact order of a set
   #
-  # @return [Array] a copy of the set normalized
+  # @return [ForteSet] a copy of the set normalized
   #
 
-  def normalize_set
+  def normalize_mod12
     winner = clone
-
     winner.sort!
-    winner.reverse!
     working_set = winner.clone
 
     # Pick the best winner out of the lot of permutations
     0.upto(length - 2 ) do
       winner = winner.compare_compact_sets( working_set.rotate!(1) )
      end
-
-    winner.reverse!
+    winner
   end
 
   # Normalizes the set in place and returns a reference to the set
   #
-  # @return [Array] a reference to the normalized set
+  # @return [ForteSet] a reference to the normalized set
   #
 
-  def normalize_set!
+  def normalize_mod12!
     sort!
-    reverse!
     working_set = clone
 
     # Pick the best winner out of the lot of permutations
     0.upto(length - 2 ) do
       self[] = compare_compact_sets( working_set.rotate!(1) )
      end
-
-    reverse!
+    self
   end
 
   # Normalize and zero down the set, returning a copy
   #
-  # @return [Array] a copy of the set reduced
+  # @return [ForteSet] a copy of the set reduced
   #
 
-  def reduce_set
+  def reduce_mod12
     return_set = normalize_set
     return_set.zero_set!
   end
 
   # Normalize and zero down the set in place, returning a reference to the set
   #
-  # @return [Array] a reference to the reduced set
+  # @return [ForteSet] a reference to the reduced set
   #
 
-  def reduce_set!
+  def reduce_mod12!
     normalize_set!.zero_set!
   end
 
   # Return the prime version of the set
   #
-  # @return [Array] the prime version of the set or its inversion
+  # @return [ForteSet] the prime version of the set or its inversion
   #
 
-  def prime_set
-    prime_form = normalize_set.zero_set
-    inverted_form =  invert_set.normalize_set.zero_set
-    prime_form.reverse!
-    prime_form.compare_compact_sets(inverted_form.reverse!).reverse!
+  def prime_mod12
+    prime_form    = normalize_set.zero_set
+    inverted_form = invert_set.normalize_set.zero_set
+    prime_form.compare_compact_sets(inverted_form)
   end
 
   # Set the prime version of the set in place and return a reference
   #
-  # @return [Array] a reference to this set now changed to prime version
+  # @return [ForteSet] a reference to this set now changed to prime version
   #
 
-  def prime_set!
-    prime_form = normalize_set.zero_set
+  def prime_mod12!
+    prime_form    = normalize_set.zero_set
     inverted_form =  invert_set.normalize_set.zero_set
-    prime_form.reverse!
-    self[] = prime_form.compare_compact_sets(inverted_form.reverse!).reverse!
+    self[] = prime_form.compare_compact_sets(inverted_form)
     self
   end
 
   # Compare two sets and return the most compact version
   #
-  # @note going in its assumed the sets have been sorted and put in descending order as needed, since the
-  # process here works in descending order
-  #
-  # @param [Array] compare_set the set to compare it to
-  # @return [Array] the most compact form of the two
+  # @param [ForteSet] compare_set the set to compare it to
+  # @return [ForteSet] the most compact form of the two
   #
 
   def compare_compact_sets( compare_set )
-
-    winner = clone      # Assume the set is the winner going in.
+    winner      = clone                                       # Assume the set is the winner going in.
+    working_set = compare_set.clone
+    winner.reverse!
+    working_set.reverse!
 
     # Work backwards checking largest interval edge
-    compare_set.each_index do |working_last_index|
+    working_set.each_index do |working_last_index|
       compare_interval1 = (winner[working_last_index] - winner.at(-1)) % 12
-      compare_interval2 = (compare_set[working_last_index] - compare_set.at(-1)) % 12
+      compare_interval2 = (working_set[working_last_index] - working_set.at(-1)) % 12
 
       if compare_interval2 == compare_interval1
         next                                                  # equal, so loop back for next outer interval
       elsif compare_interval2 < compare_interval1             # new winner else assume #1 is good enough.
-        winner = compare_set.clone
+        winner = working_set.clone
       end
       break
     end
-    winner
+    winner.reverse!
   end
 
   # Converts the set from alpha representation to pc numbers and return a copy
   #
-  # @return [Array] a copy of the set converted to pc representation as numbers
+  # @return [ForteSet] a copy of the set converted to pc representation as numbers
   #
 
   def convert_set_from_alpha
@@ -208,7 +210,7 @@ class ForteSet < Array
 
   # Converts the set in place from alpha representation to pc numbers and return a reference
   #
-  # @return [Array] a reference to the set converted to pc representation as numbers
+  # @return [ForteSet] a reference to the set converted to pc representation as numbers
   #
 
   def convert_set_from_alpha!
@@ -217,7 +219,7 @@ class ForteSet < Array
 
   #  Converts the set from numeric representation to alphanumeric and return a copy
   #
-  # @return [Array] a copy of the set converted to character representation
+  # @return [ForteSet] a copy of the set converted to character representation
   #
 
   def convert_set_to_alpha
@@ -227,7 +229,7 @@ class ForteSet < Array
 
   # Converts the set in place from numeric representation to alphanumeric and return a reference
   #
-  # @return [Array] a reference to the set converted to character representation
+  # @return [ForteSet] a reference to the set converted to character representation
   #
 
   def convert_set_to_alpha!
@@ -289,4 +291,3 @@ class ForteSet < Array
   end
 
 end
-

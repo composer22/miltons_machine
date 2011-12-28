@@ -1,5 +1,5 @@
 require 'singleton'
-require './forte_set'                      # temp tag here until we gem it
+require './forte_set'
 
 #
 # == Class: Forte Dictionary (Singleton)
@@ -45,7 +45,7 @@ class ForteDictionary
 
   # Constructor
   #
-  # @return [Object] a new ForteSets Object
+  # @return [Object] a new ForteDictionary Object
   #
 
   def initialize
@@ -58,23 +58,23 @@ class ForteDictionary
   # Given the name of a forte set, will return an array of pitches representing the prime set
   #
   # @param [String] forte_set_name the Forte name of the set to retrieve
-  # @return [Array] a copy of the forte set from the dictionary if found
+  # @return [ForteSet] a copy of the forte set from the dictionary if found
   #
 
   def get_set( forte_set_name )
-    forte_array = @dictionary[forte_set_name]
-    forte_array.nil? ? nil : forte_array[0].clone
+    dictionary_entry = @dictionary[forte_set_name]
+    dictionary_entry.nil? ? nil : dictionary_entry[0].clone
   end
 
   # Given the name of a set, will return an array representing the interval vector of the set
   #
   # @param [String] forte_set_name the Forte name of the set who's interval vector we want
-  # @return [Array] a copy of the forte set's interval vector from the dictionary if found
+  # @return [ForteSet] a copy of the forte set's interval vector from the dictionary if found
   #
 
   def get_vector( forte_set_name )
-    forte_array = @dictionary[forte_set_name]
-    forte_array.nil? ? nil : forte_array[1].clone
+    dictionary_entry = @dictionary[forte_set_name]
+    dictionary_entry.nil? ? nil : dictionary_entry[1].clone
   end
 
   # Given the name of a set, will return a long text description of the set
@@ -84,8 +84,8 @@ class ForteDictionary
   #
 
   def get_description( forte_set_name )
-    forte_array = @dictionary[forte_set_name]
-    forte_array.nil? ? nil : forte_array[2].clone
+    dictionary_entry = @dictionary[forte_set_name]
+    dictionary_entry.nil? ? nil : dictionary_entry[2].clone
   end
 
   protected
@@ -101,11 +101,11 @@ class ForteDictionary
       columns = row.split("\t")
 
       set_name        = columns[0]
-      prime_set       = ForteSet.new( columns[1].split('') ).convert_set_from_alpha!
-      interval_vector = ForteSet.new( columns[2].split('') ).convert_set_from_alpha!
+      forte_set       = ForteSet.new( columns[1].split('') ).convert_set_from_alpha!
+      interval_vector = ForteSet.new( columns[2].split('') ).convert_set_from_alpha!   # we just need the conversion
       description     = columns[3]
 
-      @dictionary[set_name] = Array.new( [prime_set, interval_vector, description] )
+      @dictionary[set_name] = Array.new( [forte_set, interval_vector, description] )
     end
   end
 

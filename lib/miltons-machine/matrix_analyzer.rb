@@ -1,6 +1,6 @@
 require 'set'
-require './forte_set'                      # temp tag here until we gem it
-require './forte_dictionary'               # temp tag here until we gem it
+require './forte_set'
+require './forte_dictionary'
 
 #
 # == Class: Matrix Analyzer
@@ -128,7 +128,7 @@ class MatrixAnalyzer
 
   def add_row( group_id, row, number_to_transpose = 0 )
     @groups[group_id - 1] ||= Array.new
-    @groups[group_id - 1] << ForteSet.new(row).transpose_set(number_to_transpose)
+    @groups[group_id - 1] << ForteSet.new(row).transpose_mod12(number_to_transpose)
     @max_group_index  = @groups.length - 1
     @max_column_index = @groups[0][0].length - 1
   end
@@ -140,7 +140,7 @@ class MatrixAnalyzer
   #
 
   def add_search_set( search_set, number_to_transpose = 0 )
-    @search_sets << Set.new( ForteSet.new(search_set).transpose_set(number_to_transpose) )
+    @search_sets << Set.new( ForteSet.new(search_set).transpose_mod12(number_to_transpose) )
   end
 
   # Insert a forte set into the search dictionary
@@ -153,7 +153,7 @@ class MatrixAnalyzer
     search_set = ForteDictionary.instance.get_set(forte_set_name)
     raise KeyError, "forte_set could not be found" if search_set.nil?
 
-    @search_sets << Set.new( search_set.transpose_set(number_to_transpose) )
+    @search_sets << Set.new( search_set.transpose_mod12(number_to_transpose) )
   end
 
   # Run the rotation_analysis and print out the results
@@ -183,7 +183,7 @@ class MatrixAnalyzer
   # final vertical analysis for the current rotations; otherwise, just calls itself to process the next group in the
   # hierarchy.
   #
-  # @param [integer] level depth/group indicator in recursion (optional)
+  # @param [integer] level depth/group indicator in recursion
   #
 
   def rotate_group( level = -1 )
@@ -236,7 +236,7 @@ class MatrixAnalyzer
       print_details(result_counts, score) if @report_details
     end
 
-    print_rotation_count unless @report_details
+    print_rotation_count unless @report_details                # run progress meter if in summary mode
 
   end
 
