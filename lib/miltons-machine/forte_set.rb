@@ -1,4 +1,4 @@
-
+#
 # == Class: Forte Set
 #
 # An extention to the basic Array class of Ruby to allow for modulus 12 operations and transformations
@@ -21,7 +21,7 @@ class ForteSet < Array
   #
 
   def transpose_set( number_to_transpose = 0 )
-    return_set = self.clone
+    return_set = clone
     return_set.collect! { |pc| pc = transpose_pitch_class(pc, number_to_transpose) }
   end
 
@@ -32,7 +32,7 @@ class ForteSet < Array
   #
 
   def transpose_set!( number_to_transpose = 0 )
-    self.collect! { |pc| pc = transpose_pitch_class(pc, number_to_transpose) }
+    collect! { |pc| pc = transpose_pitch_class(pc, number_to_transpose) }
   end
 
   # Return the inversion of this set
@@ -41,7 +41,7 @@ class ForteSet < Array
   #
 
   def invert_set
-    return_set = self.clone
+    return_set = clone
     return_set.collect! { |pc| pc = invert_pitch_class(pc) }
   end
 
@@ -51,7 +51,7 @@ class ForteSet < Array
   #
 
   def invert_set!
-    self.collect! { |pc| pc = invert_pitch_class(pc) }
+    collect! { |pc| pc = invert_pitch_class(pc) }
   end
 
   # Return the complement of this set
@@ -71,7 +71,7 @@ class ForteSet < Array
   def zero_set
     number_to_transpose = 0
     self[0] == 0 ? number_to_transpose = 0 :  number_to_transpose = 12 - self[0]
-    self.transpose_set(number_to_transpose)
+    transpose_set(number_to_transpose)
   end
 
   # Zero the set in place, so that all element transposed so that the first element is set to zero. Return a reference
@@ -83,7 +83,7 @@ class ForteSet < Array
   def zero_set!
     number_to_transpose = 0
     self[0] == 0 ? number_to_transpose = 0 :  number_to_transpose = 12 - self[0]
-    self.transpose_set!(number_to_transpose)
+    transpose_set!(number_to_transpose)
   end
 
   # Returns the most compact order of a set
@@ -92,7 +92,7 @@ class ForteSet < Array
   #
 
   def normalize_set
-    winner = self.clone
+    winner = clone
 
     winner.sort!
     winner.reverse!
@@ -112,16 +112,16 @@ class ForteSet < Array
   #
 
   def normalize_set!
-    self.sort!
-    self.reverse!
-    working_set = self.clone
+    sort!
+    reverse!
+    working_set = clone
 
     # Pick the best winner out of the lot of permutations
     0.upto(self.length - 2 ) do
-      self[] = self.compare_compact_sets( working_set.rotate!(1) )        # broken
+      self[] = compare_compact_sets( working_set.rotate!(1) )
      end
 
-    self.reverse!
+    reverse!
   end
 
   # Normalize and zero down the set, returning a copy
@@ -130,7 +130,7 @@ class ForteSet < Array
   #
 
   def reduce_set
-    return_set = self.normalize_set
+    return_set = normalize_set
     return_set.zero_set!
   end
 
@@ -140,7 +140,7 @@ class ForteSet < Array
   #
 
   def reduce_set!
-    self.normalize_set!.zero_set!
+    normalize_set!.zero_set!
   end
 
   # Return the prime version of the set
@@ -149,8 +149,8 @@ class ForteSet < Array
   #
 
   def prime_set
-    prime_form = self.normalize_set.zero_set
-    inverted_form =  self.invert_set.normalize_set.zero_set
+    prime_form = normalize_set.zero_set
+    inverted_form =  invert_set.normalize_set.zero_set
     prime_form.reverse!
     prime_form.compare_compact_sets(inverted_form.reverse!).reverse!
   end
@@ -161,10 +161,10 @@ class ForteSet < Array
   #
 
   def prime_set!
-    prime_form = self.normalize_set.zero_set
-    inverted_form =  self.invert_set.normalize_set.zero_set
+    prime_form = normalize_set.zero_set
+    inverted_form =  invert_set.normalize_set.zero_set
     prime_form.reverse!
-    self[]  = prime_form.compare_compact_sets(inverted_form.reverse!).reverse!      #broken
+    self[]  = prime_form.compare_compact_sets(inverted_form.reverse!).reverse!
     self
   end
 
@@ -179,7 +179,7 @@ class ForteSet < Array
 
   def compare_compact_sets( compare_set )
 
-    winner = self.clone      # Assume the set is the winner going in.
+    winner = clone      # Assume the set is the winner going in.
 
     # Work backwards checking largest interval edge
     compare_set.each_index do |working_last_index|
@@ -202,7 +202,7 @@ class ForteSet < Array
   #
 
   def convert_set_from_alpha
-    return_set = self.clone
+    return_set = clone
     return_set.collect! { |pc| pc = convert_from_alpha(pc) }
   end
 
@@ -212,7 +212,7 @@ class ForteSet < Array
   #
 
   def convert_set_from_alpha!
-    self.collect! { |pc| pc = convert_from_alpha(pc) }
+    collect! { |pc| pc = convert_from_alpha(pc) }
   end
 
   #  Converts the set from numeric representation to alphanumeric and return a copy
@@ -221,7 +221,7 @@ class ForteSet < Array
   #
 
   def convert_set_to_alpha
-    return_set = self.clone
+    return_set = clone
     return_set.collect! { |pc| pc = convert_to_alpha(pc) }
   end
 
@@ -231,7 +231,7 @@ class ForteSet < Array
   #
 
   def convert_set_to_alpha!
-    self.collect! { |pc| pc = convert_to_alpha(pc) }
+    collect! { |pc| pc = convert_to_alpha(pc) }
   end
 
   protected

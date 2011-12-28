@@ -1,7 +1,7 @@
 require 'singleton'
 require './forte_set'                      # temp tag here until we gem it
 
-
+#
 # == Class: Forte Dictionary (Singleton)
 #
 # A dictionary of Forte sets indexed by name
