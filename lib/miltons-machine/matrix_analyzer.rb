@@ -1,11 +1,12 @@
 require 'set'
-require './forte_sets'                      # temp tag here until we gem it
+require './forte_sets'                     # temp tag here until we gem it
+require './forte_set'                      # temp tag here until we gem it
 
 #
 # == Class: Matrix Analyzer
 #
 # Given an array where each element in the array is a group of rows - each row representing ordered musical pitches:
-# Permutate each group of rows in parallel using rotation.  After each rotation search each column (intersecting all
+# permutate each group of rows in parallel using rotation.  After each rotation search each column (intersecting all
 # groups) for a pattern of sonorities from a dictionary. If a sonority is found, then tabulate a score for comparison
 # reporting.
 #
@@ -88,11 +89,16 @@ class MatrixAnalyzer
   attr_accessor :summary_totals     # Used to collect a final tally of subsets found. For example:
                                     # summary_totals[9] = 21 means 21 permutations had 9 subsets found in each
 
+  attr_accessor :max_group_index    # The last index of the groups array e.g. length - 1
+
+  attr_accessor :max_column_index   # The last index of the columns of the rows  e.g. length - 1
+
   attr_accessor :rotation_count     # Used to count the total number of permutations (rotations) performed by the run.
 
   attr_accessor :maximum_rotations  # A calculation of the total number of rotations that this process will produce.
 
-  protected     :groups, :search_sets, :summary_totals, :rotation_count, :maximum_rotations
+  protected     :groups, :search_sets, :summary_totals, :max_group_index, :max_column_index, :rotation_count,
+                :maximum_rotations
 
   public
 
@@ -108,6 +114,8 @@ class MatrixAnalyzer
     @groups            = Array.new
     @search_sets       = Array.new
     @summary_totals    = Array.new
+    @max_group_index   = 0
+    @max_column_index  = 0
     @rotation_count    = 0
     @maximum_rotations = 0
   end
@@ -121,7 +129,9 @@ class MatrixAnalyzer
 
   def add_row( group_id, row, number_to_transpose = 0 )
     @groups[group_id - 1] ||= Array.new
-    @groups[group_id - 1] << ForteSets.instance.transpose_set(row, number_to_transpose)
+    @groups[group_id - 1] << ForteSet.new(row).transpose_set(number_to_transpose)
+    @max_group_index  = @groups.length - 1
+    @max_column_index = @groups[0][0].length - 1
   end
 
   # Insert a set into the search dictionary
@@ -131,7 +141,7 @@ class MatrixAnalyzer
   #
 
   def add_search_set( search_set, number_to_transpose = 0 )
-    @search_sets << Set.new( ForteSets.instance.transpose_set(search_set, number_to_transpose) )
+    @search_sets << Set.new( ForteSet.new(search_set).transpose_set(number_to_transpose) )
   end
 
   # Insert a forte set into the search dictionary
@@ -141,10 +151,10 @@ class MatrixAnalyzer
   # @raise [KeyError] forte_set could not be found
 
   def add_forte_set( forte_set_name, number_to_transpose = 0 )
-    search_set = ForteSets.instance.get_set(forte_set_name)
+    search_set = ForteDictionary.instance.get_set(forte_set_name)
     raise KeyError, "forte_set could not be found" if search_set.nil?
 
-    @search_sets << Set.new( ForteSets.instance.transpose_set(search_set, number_to_transpose) )
+    @search_sets << Set.new( search_set.transpose_set(number_to_transpose) )
   end
 
   # Run the rotation_analysis and print out the results
@@ -165,10 +175,9 @@ class MatrixAnalyzer
     @summary_totals.clear
     @rotation_count = 0
 
-    #  Calculate total number of rotation permutations for the run.
-    number_of_columns = @groups[0][0].length
-    number_of_groups  = @groups.length - 1
-    @maximum_rotations = number_of_columns ** number_of_groups
+    # Calculate total number of rotation permutations for the run.
+    # number_of_columns^(number_of_groups - 1)
+    @maximum_rotations = @groups[0][0].length ** @max_group_index
   end
 
   # A recursive routine that rotates a group of voices in the horizontal matrix.  If it is at depth, performs the
@@ -181,17 +190,14 @@ class MatrixAnalyzer
   def rotate_group( level = -1 )
     level += 1
 
-    if level == 0                                            # First group always remains static
+    if level == 0                                       # First group always remains static
       rotate_group(level)                               # Recursive call to process next group of rows
     else
       # Rotate each pitch to the right for each row in this group.  If its the last group then analyze the verticals
       # in each column across all groups; otherwise recursively call to process next group of rows.
-
-      max_group_index   = @groups.length - 1
-      max_column_index  = @groups[0][0].length - 1
-      0.upto(max_column_index) do
+      0.upto(@max_column_index) do
         @groups[level].each { |row| row.rotate!(-1) }
-        level == max_group_index ? analyze_sonorities : rotate_group(level)
+        level == @max_group_index ? analyze_sonorities : rotate_group(level)
       end
     end
   end
@@ -255,7 +261,7 @@ class MatrixAnalyzer
 
   def print_details( result_counts, score )
     puts ('=' * 10) << "\n"
-    @groups.each_with_index { |group, n | group.each { |row| puts "#{row} Group " << (n + 1).to_s } }
+    @groups.each_with_index { |group, index| group.each { |row| puts "#{row} Group " << (index + 1).to_s } }
     puts  '-' *  (@groups[0][0].length * 3)
     puts "#{result_counts} Score"
     puts "\nTotal Score: #{score}\n"

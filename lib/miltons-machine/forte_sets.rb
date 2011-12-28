@@ -1,8 +1,9 @@
 require 'singleton'
+require 'forte_set'
 
-# == Class: Forte Sets (Singleton)
+# == Class: Forte Dictionary (Singleton)
 #
-# A dictionary of Forte sets indexed by name, as well as some common operations
+# A dictionary of Forte sets indexed by name
 #
 # Use this class to lookup forte representation of musical sets.
 #
@@ -27,10 +28,10 @@ require 'singleton'
 #
 #    # would print out "Major Diatonic Heptachord/Dominant-13th, Locrian (1221222), Phrygian (1222122), Major inverse"
 #
-# TODO allow name lookup by an array representing the set.  Should normalize, make prime etc.
+# TODO allow name lookup by an array representing the set
 #
 
-class ForteSets
+class ForteDictionary
   include Singleton
 
   #   File layout: <set_name>\t<prime_set>\t<interval_vector>\t<description>\n
@@ -86,175 +87,6 @@ class ForteSets
     forte_array.nil? ? nil : forte_array[2].clone
   end
 
-  # Given a set of pitches, and how many 1/2 steps you want to transpose it, returns a new set at the new
-  # transposition
-  #
-  # @param [Array] set_to_transpose the set which we want to transpose
-  # @param [Integer] number_to_transpose number of half steps between 0 - 11
-  # @return [Array] a copy of the set transposed to the new Tn
-  #
-
-  def transpose_set( set_to_transpose, number_to_transpose = 0 )
-    return_set = set_to_transpose.clone
-    return_set.collect! { |pc| pc = transpose_pitch_class(pc, number_to_transpose) }
-    return_set
-  end
-
-  # Given a set of pitches, return the sets inversion
-  #
-  # @param [Array] set_to_invert the set which we want to invert
-  # @return [Array] a copy of the set inverted
-  #
-
-  def invert_set( set_to_invert )
-    return_set = set_to_invert.clone
-    return_set.collect! { |pc| pc = invert_pitch_class(pc) }
-    return_set
-  end
-
-  # Given a set of pitches, return the complement set
-  #
-  # @param [Array] set_to_complement the set who's complement we desire
-  # @return [Array] the complement set
-  #
-
-  def complement_set( set_to_complement )
-    Array.new(12) { |i| i }  - set_to_complement
-  end
-
-  # Given a set of pitches, return a copy of the set with all element transposed so that the first element
-  # is set to zero.
-  #
-  # @param [Array] set_to_zero_out the set to set to zero.
-  # @return [Array] the zero transposed set
-  #
-
-  def zero_set( set_to_zero_out )
-    number_to_transpose = 0
-    set_to_zero_out[0] == 0 ? number_to_transpose = 0 :  number_to_transpose = 12 - set_to_zero_out[0]
-    transpose_set(set_to_zero_out, number_to_transpose)
-  end
-
-  # Returns the most compact order of a set
-  #
-  # @param [Array] set_to_normalize the set we wish to normalize the order
-  # @return [Array] a copy of the set normalized
-  #
-
-  def normalize_set( set_to_normalize )
-    winner = set_to_normalize.clone
-
-    winner.sort!
-    winner.reverse!
-    working_set = winner.clone
-
-    # Pick the best winner out of the lot of permutations
-    0.upto(winner.length - 2 ) do
-      winner = compare_compact_sets(winner, working_set.rotate!(1) )
-     end
-
-    winner.reverse
-  end
-
-  # Normalize and zero down the set
-  #
-  # @param [Array] set_to_reduce the set we wish to normalize and zero down
-  # @return [Array] a copy of the set reduced
-  #
-
-  def reduce_set( set_to_reduce )
-    zero_set(normalize_set(set_to_reduce))
-  end
-
-  # Return the prime version of the set
-  #
-  # @param [Array] set_to_prime the set we wish to find the prime form for
-  # @return [Array] the prime version of the set or its inversion
-  #
-
-  def prime_set( set_to_prime )
-    prime_form = zero_set(normalize_set(set_to_prime))
-    inverted_form = zero_set(normalize_set(invert_set(set_to_prime)))
-    compare_compact_sets(prime_form.reverse, inverted_form.reverse).reverse
-  end
-
-  # Compare two sets and return the most compact version
-  #
-  # @note going in its assumed the sets have been sorted and put in descending order...
-  #
-  # @param [Array] compare_set1 the first set to compare
-  # @param [Array] compare_set2 the second set to compare
-  # @return [Array] the most compact form of the two
-  #
-  def compare_compact_sets( compare_set1, compare_set2 )
-
-    winner = compare_set1.clone      # Assume set 1 is the winner going in.
-
-    # Work backwards checking largest interval edge
-    compare_set2.each_index do |working_last_index|
-      compare_interval1 = (compare_set1[working_last_index] - compare_set1.at(-1)) % 12
-      compare_interval2 = (compare_set2[working_last_index] - compare_set2.at(-1)) % 12
-
-      if compare_interval2 == compare_interval1
-        next                                                  # equal, so loop back for next outer interval
-      elsif compare_interval2 < compare_interval1             # new winner else assume #1 is good enough.
-        winner = compare_set2.clone
-      end
-      break
-    end
-    winner
-  end
-
-  # Given a musical pitch, and how many 1/2 steps you want to transpose it, returns a new pitch at the new
-  # transposition
-  #
-  # @param [Integer] pitch_class the pitch to transpose ()0-11)
-  # @param [Integer] number_to_transpose the Tn we wish to transpose it to
-  # @return [Integer] a copy of the pitch at the new Tn
-  #
-
-  def transpose_pitch_class( pitch_class, number_to_transpose = 0 )
-    (pitch_class + number_to_transpose)  % 12
-  end
-
-  # Given a musical pitch, return the inversion of the pitch
-  #
-  # @param [Integer] pitch_class the pitch to invert ()0-11)
-  # @return [Integer] a copy of the pitch at the new inversion
-  #
-
-  def invert_pitch_class( pitch_class )
-    (12 - pitch_class)  % 12
-  end
-
-  # Convert String representation of a pitch to an Integer representation
-  #
-  # @param [String] pitch_class the pitch to convert
-  # @return [Integer]  a copy of the pitch translated to Integer representation
-  #
-
-  def convert_from_alpha( pitch_class )
-    case pitch_class.to_s
-      when 'A', 'a' then 10
-      when 'B', 'b' then 11
-      else pitch_class.to_i
-    end
-  end
-
-  # Convert Integer representation of a pitch to a String representation
-  #
-  # @param [Integer] pitch_class the pitch to convert
-  # @return [String] a copy of the pitch translated to a string representation
-  #
-
-  def convert_to_alpha( pitch_class )
-    case pitch_class.to_i
-      when 10 then 'A'
-      when 11 then 'B'
-      else pitch_class.to_s
-    end
-  end
-
   protected
 
   # Loads the dictionary from a CSV file into a hash dictionary
@@ -267,12 +99,8 @@ class ForteSets
     file.each_line("\n") do |row|
       columns = row.split("\t")
       set_name  =  columns[0]
-      prime_set =  columns[1].split
-      prime_set.collect! { |pc| pc = convert_from_alpha(pc) }
-
-      interval_vector =  columns[2].split
-      interval_vector.collect! { |pc| pc = convert_from_alpha(pc) }
-
+      prime_set       = ForteSet.new( columns[1].split('') ).convert_set_from_alpha!
+      interval_vector = ForteSet.new( columns[2].split('') ).convert_set_from_alpha!
       description = columns[3]
 
       @dictionary[set_name] = Array.new( [prime_set, interval_vector, description] )
