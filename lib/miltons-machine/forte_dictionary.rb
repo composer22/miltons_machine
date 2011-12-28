@@ -4,7 +4,7 @@ require './forte_set'                      # temp tag here until we gem it
 #
 # == Class: Forte Dictionary (Singleton)
 #
-# A dictionary of Forte sets indexed by name
+# A dictionary of Forte sets indexed by name for use by the system
 #
 # Use this class to lookup forte representation of musical sets.
 #

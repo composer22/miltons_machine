@@ -66,7 +66,6 @@ require './forte_dictionary'               # temp tag here until we gem it
 # ex:  there are 42 permutation solutions that have 5 columns holding major or minor chords
 #
 # TODO More report filtering options and statistic measurements
-# TODO Allow for horizontal searches
 # TODO Performance improvement - allow for start and stop rotation indexes so work can be broken up
 # TODO Performance improvement - parallel forking/threads, better algorithms etc...
 #

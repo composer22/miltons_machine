@@ -2,5 +2,5 @@
 
 This section contains RSpec testing scripts for testing the classes within Milton's Machine.
 
-@note This is currently pending as a work in progress.
+@note This is currently pending as a work in progress at high priority.
 

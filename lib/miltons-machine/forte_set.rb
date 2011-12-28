@@ -1,8 +1,8 @@
 #
 # == Class: Forte Set
 #
-# An extention to the basic Array class of Ruby to allow for modulus 12 operations and transformations
-# for musical set theoretics.
+# An extention to the basic Array class of Ruby to allow for modulus 12 operations and transformations for musical set
+# theoretics.
 #
 # @example  create and transpose a set
 #
