@@ -1,6 +1,6 @@
 require 'set'
-require './forte_sets'                     # temp tag here until we gem it
 require './forte_set'                      # temp tag here until we gem it
+require './forte_dictionary'               # temp tag here until we gem it
 
 #
 # == Class: Matrix Analyzer

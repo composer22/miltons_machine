@@ -1,5 +1,6 @@
 require 'singleton'
-require 'forte_set'
+require './forte_set'                      # temp tag here until we gem it
+
 
 # == Class: Forte Dictionary (Singleton)
 #
@@ -36,7 +37,7 @@ class ForteDictionary
 
   #   File layout: <set_name>\t<prime_set>\t<interval_vector>\t<description>\n
 
-  FORTE_SETS_CSV = "forte_sets.csv"
+  FORTE_DICTIONARY_CSV = "forte_dictionary.csv"
 
   attr_accessor :dictionary
 
@@ -95,7 +96,7 @@ class ForteDictionary
   #
 
   def load_dictionary
-    file = File.new(FORTE_SETS_CSV, 'r')
+    file = File.new(FORTE_DICTIONARY_CSV, 'r')
     file.each_line("\n") do |row|
       columns = row.split("\t")
       set_name  =  columns[0]
