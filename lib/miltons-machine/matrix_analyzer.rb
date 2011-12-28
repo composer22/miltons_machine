@@ -72,29 +72,46 @@ require './forte_dictionary'
 
 class MatrixAnalyzer
 
-  attr_accessor :minimax_score      # Range object - minimum to maximum score that must be met in the results for a
-                                    # solution to be counted. default = 0..9999999
+  # Range object - minimum to maximum score that must be met in the results for a solution to be counted.
 
-  attr_accessor :report_details     # If true, show details of the analysis, else summary only. default = false
+  attr_accessor :minimax_score
 
-  attr_accessor :groups             # A 3d array for holding horizontal ordered sets (rows) - each set:
-                                    # 1) representing an ordered voice of pitches in the matrix
-                                    # 2) should be rotatable like a cannon
-                                    # 3) encoded in mod12 pitch class notation (0 = c up to 11 = b)
+  # Show details of the analysis, else summary only.
 
-  attr_accessor :search_sets        # A 2d array for holding set of pitches to analyze when looking for vertical
-                                    # sonorities.  These should already be transformed using Tn or TnI
+  attr_accessor :report_details
 
-  attr_accessor :summary_totals     # Used to collect a final tally of subsets found. For example:
-                                    # summary_totals[9] = 21 means 21 permutations had 9 subsets found in each
+  # A 3d array for holding horizontal ordered sets (rows) - each set:
+  # 1) representing an ordered voice of pitches in the matrix
+  # 2) should be rotatable like a cannon
+  # 3) encoded in mod12 pitch class notation (0 = c up to 11 = b)
 
-  attr_accessor :max_group_index    # The last index of the groups array e.g. length - 1
+  attr_accessor :groups
 
-  attr_accessor :max_column_index   # The last index of the columns of the rows  e.g. length - 1
+  # A 2d array for holding set of pitches to analyze when looking for vertical sonorities.  These should already be
+  # transformed using Tn or TnI
 
-  attr_accessor :rotation_count     # Used to count the total number of permutations (rotations) performed by the run.
+  attr_accessor :search_sets
 
-  attr_accessor :maximum_rotations  # A calculation of the total number of rotations that this process will produce.
+  # Used to collect a final tally of subsets found. For example: summary_totals[9] = 21 means 21 permutations had 9
+  # subsets found in each
+
+  attr_accessor :summary_totals
+
+  # The last index of the groups array e.g. length - 1
+
+  attr_accessor :max_group_index
+
+  # The last index of the columns of the rows  e.g. length - 1
+
+  attr_accessor :max_column_index
+
+  # Used to count the total number of permutations (rotations) performed by the run.
+
+  attr_accessor :rotation_count
+
+  # A calculation of the total number of rotations that this process will produce.
+
+  attr_accessor :maximum_rotations
 
   protected     :groups, :search_sets, :summary_totals, :max_group_index, :max_column_index, :rotation_count,
                 :maximum_rotations
