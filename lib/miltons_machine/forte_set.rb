@@ -69,7 +69,7 @@ class ForteSet < Array
   #
 
   def complement_mod12!
-    self[] = ForteSet.new(12) { |i| i }  - self
+    self.replace( ForteSet.new(12) { |i| i }  - self )
     self
   end
 
@@ -124,7 +124,7 @@ class ForteSet < Array
 
     # Pick the best winner out of the lot of permutations
     0.upto(length - 2 ) do
-      self[] = compare_compact_sets( working_set.rotate!(1) )
+      self.replace( compare_compact_sets( working_set.rotate!(1) ) )
      end
     self
   end
