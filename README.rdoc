@@ -25,7 +25,7 @@ the issue.
 
 You can view the Milton's Machine documentation in RDoc format here:
 
-http://rubydoc.info/github/composer22/miltons-machine/master/frames
+http://rubydoc.info/github/composer22/miltons_machine/master/frames
 
 === Contributing
 
@@ -41,7 +41,7 @@ Currently, we are still in pre-release mode, but eventually:
 
 Simply add this to your code
 
-require 'miltons-machine'
+require 'miltons_machine'
 
 Example: "row row row your boat"
 

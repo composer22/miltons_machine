@@ -8,6 +8,6 @@
 #   require 'miltons-machine'
 #
 
-require 'miltons-machine/forte_set'
-require 'miltons-machine/forte_dictionary'
-require 'miltons-machine/matrix_analyzer'
+require 'miltons_machine/forte_set'
+require 'miltons_machine/forte_dictionary'
+require 'miltons_machine/matrix_analyzer'
