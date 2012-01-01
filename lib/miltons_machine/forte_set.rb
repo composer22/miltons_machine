@@ -70,7 +70,6 @@ class ForteSet < Array
 
   def complement_mod12!
     self.replace( ForteSet.new(12) { |i| i }  - self )
-    self
   end
 
   # Return a copy of the set with all elements transposed so that the first element is set to zero.
@@ -92,7 +91,7 @@ class ForteSet < Array
 
   def zero_mod12!
     number_to_transpose = 0
-    self[0] == 0 ? number_to_transpose = 0 :  number_to_transpose = 12 - self[0]
+    self[0] == 0 ? number_to_transpose = 0 : number_to_transpose = 12 - self[0]
     transpose_mod12!(number_to_transpose)
   end
 
@@ -107,9 +106,7 @@ class ForteSet < Array
     working_set = winner.clone
 
     # Pick the best winner out of the lot of permutations
-    0.upto(length - 2 ) do
-      winner = winner.compare_compact_sets( working_set.rotate!(1) )
-     end
+    0.upto(length - 2) { winner = winner.compare_compact_sets( working_set.rotate!(1) ) }
     winner
   end
 
@@ -123,9 +120,7 @@ class ForteSet < Array
     working_set = clone
 
     # Pick the best winner out of the lot of permutations
-    0.upto(length - 2 ) do
-      self.replace( compare_compact_sets( working_set.rotate!(1) ) )
-     end
+    0.upto(length - 2 ) { self.replace( compare_compact_sets( working_set.rotate!(1) ) ) }
     self
   end
 
@@ -135,8 +130,8 @@ class ForteSet < Array
   #
 
   def reduce_mod12
-    return_set = normalize_set
-    return_set.zero_set!
+    return_set = normalize_mod12
+    return_set.zero_mod12!
   end
 
   # Normalize and zero down the set in place, returning a reference to the set
@@ -145,7 +140,7 @@ class ForteSet < Array
   #
 
   def reduce_mod12!
-    normalize_set!.zero_set!
+    normalize_mod12!.zero_mod12!
   end
 
   # Return the prime version of the set
@@ -154,8 +149,8 @@ class ForteSet < Array
   #
 
   def prime_mod12
-    prime_form    = normalize_set.zero_set
-    inverted_form = invert_set.normalize_set.zero_set
+    prime_form    = normalize_mod12.zero_mod12
+    inverted_form = invert_mod12.normalize_mod12.zero_mod12
     prime_form.compare_compact_sets(inverted_form)
   end
 
@@ -165,10 +160,9 @@ class ForteSet < Array
   #
 
   def prime_mod12!
-    prime_form    = normalize_set.zero_set
-    inverted_form =  invert_set.normalize_set.zero_set
-    self[] = prime_form.compare_compact_sets(inverted_form)
-    self
+    prime_form    = normalize_mod12.zero_mod12
+    inverted_form = invert_mod12.normalize_mod12.zero_mod12
+    self.replace( prime_form.compare_compact_sets(inverted_form) )
   end
 
   # Compare two sets and return the most compact version
@@ -205,7 +199,7 @@ class ForteSet < Array
 
   def convert_set_from_alpha
     return_set = clone
-    return_set.collect! { |pc| pc = convert_from_alpha(pc) }
+    return_set.collect! { |pc| pc = convert_pc_from_alpha(pc) }
   end
 
   # Converts the set in place from alpha representation to pc numbers and return a reference
@@ -214,7 +208,7 @@ class ForteSet < Array
   #
 
   def convert_set_from_alpha!
-    collect! { |pc| pc = convert_from_alpha(pc) }
+    collect! { |pc| pc = convert_pc_from_alpha(pc) }
   end
 
   #  Converts the set from numeric representation to alphanumeric and return a copy
@@ -224,7 +218,7 @@ class ForteSet < Array
 
   def convert_set_to_alpha
     return_set = clone
-    return_set.collect! { |pc| pc = convert_to_alpha(pc) }
+    return_set.collect! { |pc| pc = convert_pc_to_alpha(pc) }
   end
 
   # Converts the set in place from numeric representation to alphanumeric and return a reference
@@ -233,7 +227,7 @@ class ForteSet < Array
   #
 
   def convert_set_to_alpha!
-    collect! { |pc| pc = convert_to_alpha(pc) }
+    collect! { |pc| pc = convert_pc_to_alpha(pc) }
   end
 
   protected

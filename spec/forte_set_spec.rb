@@ -73,47 +73,96 @@ describe ForteSet do
     end
 
     it "should return its normalized form" do
-      true
+      subject.transpose_mod12!(1)
+      return_set = subject.normalize_mod12
+      subject.should eq([1, 4, 6, 7, 10])
+      return_set.should eq([4, 6, 7, 10, 1])
     end
 
     it "should replace itself with it's normalized form and return a copy" do
-      true
+      subject.transpose_mod12!(1)
+      return_set = subject.normalize_mod12!
+      subject.should eq([4, 6, 7, 10, 1])
+      return_set.should eq(subject)
+      subject[3] = 9
+      subject.should eq([4, 6, 7, 9, 1])
+      return_set.should eq(subject)
     end
 
     it "should return it's reduced form'" do
-      true
+      subject.transpose_mod12!(1)
+      return_set = subject.reduce_mod12
+      subject.should eq([1, 4, 6, 7, 10])
+      return_set.should eq([0, 2, 3, 6, 9])
     end
 
     it "should replace itself with it's reduced form and return a copy" do
-      true
+      subject.transpose_mod12!(1)
+      return_set = subject.reduce_mod12!
+      subject.should eq([0, 2, 3, 6, 9])
+      return_set.should eq(subject)
+      subject[3] = 7
+      subject.should eq([0, 2, 3, 7, 9])
+      return_set.should eq(subject)
     end
 
     it "should return it's prime form" do
-      true
+      subject.transpose_mod12!(1)
+      return_set = subject.prime_mod12
+      subject.should eq([1, 4, 6, 7, 10])
+      return_set.should eq([0, 1, 3, 6, 9])
     end
 
     it "should replace itself with it's prime form and return a reference" do
-      true
+      subject.transpose_mod12!(1)
+      return_set = subject.prime_mod12!
+      subject.should eq([0, 1, 3, 6, 9])
+      return_set.should eq(subject)
+      subject[3] = 7
+      subject.should eq([0, 1, 3, 7, 9])
+      return_set.should eq(subject)
     end
 
     it "should compare itself with another set and return the more compact form" do
-      true
+      subject.transpose_mod12!(1)
+      return_set = subject.compare_compact_sets([4, 6, 7, 10, 1])
+      subject.should eq([1, 4, 6, 7, 10])
+      return_set.should eq([4, 6, 7, 10, 1])
     end
 
     it "should convert itself from alphanumeric form and return a copy" do
-      true
+      subject.replace(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'a', 'B', 'b', 'C', 'c'])
+      return_set = subject.convert_set_from_alpha
+      subject.should eq(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'a', 'B', 'b', 'C', 'c'])
+      return_set.should eq([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 11, 11, 12, 12])
     end
 
     it "should convert itself in place from alphanumeric form and return a reference" do
-      true
+      subject.replace(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'a', 'B', 'b', 'C', 'c'])
+      return_set = subject.convert_set_from_alpha!
+      subject.should eq([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 11, 11, 12, 12])
+      return_set.should eq(subject)
+      5.times { |n| subject[10 + n] = n}
+      subject.should eq([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 12])
+      return_set.should eq(subject)
     end
 
     it "should convert itself from numeric form and return a copy" do
-      true
+      subject.replace([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 11, 11, 12, 12])
+      return_set = subject.convert_set_to_alpha
+      subject.should eq([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 11, 11, 12, 12])
+      return_set.should eq(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'A', 'B', 'B', 'C', 'C'])
+
     end
 
     it "should convert itself in place from numeric form and return a reference" do
-      true
+      subject.replace([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 11, 11, 12, 12])
+      return_set = subject.convert_set_to_alpha!
+      subject.should eq(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'A', 'B', 'B', 'C', 'C'])
+      return_set.should eq(subject)
+      5.times { |n| subject[10 + n] = n.to_s}
+      subject.should eq(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', 'C'])
+      return_set.should eq(subject)
     end
 
   end
