@@ -33,15 +33,13 @@ We hope that you will consider contributing to Milton's Machine. Please contact 
 
 === Installation
 
-Currently, we are still in pre-release mode, but eventually:
-
-  gem install miltons-machine
+    gem install miltons_machine
 
 === Getting started
 
 Simply add this to your code
 
-require 'miltons_machine'
+    require 'miltons_machine'
 
 Example: "row row row your boat"
 
@@ -52,7 +50,7 @@ Example: "row row row your boat"
     major = [0, 4, 7]    # 3-11i
     minor = [0, 3, 7]    # 3-11
 
-    analysis_engine = MatrixAnalyzer.new
+    analysis_engine = MiltonsMachine::MatrixAnalyzer.new
     analysis_engine.report_details=(true)
 
     # First add the rows.  Three voices = triadic; independently rotated by setting them in separate groups

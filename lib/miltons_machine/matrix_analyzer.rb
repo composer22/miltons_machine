@@ -25,7 +25,7 @@ module MiltonsMachine
   #    major =  [0, 4, 7]                                            # 3-11i
   #    minor =  [0, 3, 7]                                            # 3-11
   #
-  #    analysis_engine = MatrixAnalyzer.new
+  #    analysis_engine = MiltonsMachine::MatrixAnalyzer.new
   #    analysis_engine.report_details=(true)
   #
   #    # First add the rows.  Three voices = triadic; independent in separate groups

@@ -15,17 +15,17 @@ module MiltonsMachine
   #
   # @example Retrieving Sets
   #
-  #    major_scale = ForteSets.instance.get_set("7-35")
+  #    major_scale = MiltonsMachine::ForteDictionary.instance.get_set("7-35")
   #    puts major_scale
   #
   #    # would print out [0, 1, 3, 5, 6, 8, 11]
   #
-  #    interval_vector = ForteSets.instance.get_vector("7-35")
+  #    interval_vector = MiltonsMachine::ForteDictionary.instance.get_vector("7-35")
   #    puts interval_vector
   #
   #    # would print out [7, 2, 5, 4, 3, 6, 1]
   #
-  #    description = ForteSets.instance.get_description("7-35")
+  #    description = MiltonsMachine::ForteDictionary.instance.get_description("7-35")
   #    puts description
   #
   #    # would print out "Major Diatonic Heptachord/Dominant-13th, Locrian (1221222), Phrygian (1222122), Major inverse"

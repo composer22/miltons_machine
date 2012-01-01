@@ -8,7 +8,7 @@ module MiltonsMachine
   #
   # @example  create and transpose a set
   #
-  #   major_set = ForteSet.new([0, 4, 7])
+  #   major_set = MiltonsMachine::ForteSet.new([0, 4, 7])
   #   major_set.transpose_mod12!(3)
   #   puts major_set     <-- should print out [3, 7, 10]
   #
