@@ -1,6 +1,6 @@
-require 'miltons_machine/forte_set'
+require 'miltons_machine'
 
-describe ForteSet do
+describe MiltonsMachine::ForteSet do
 
   context "when performing base set operations" do
 

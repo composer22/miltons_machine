@@ -1,3 +1,3 @@
 module MiltonsMachine
-  VERSION = "1.0.0.rc".freeze
+  VERSION = "0.0.1.pre".freeze
 end
