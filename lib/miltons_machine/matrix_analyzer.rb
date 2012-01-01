@@ -257,9 +257,9 @@ module MiltonsMachine
 
     end
 
-    # Accumulate current snapshot search result counts into the reports summary totals.  For example: if the total column
-    # score was 9 for the current rotation of the rows, summary_totals[9] would be incremented to reflect that a matrix
-    # solution was found with score = 9
+    # Accumulate current permutation search result counts into the reports summary totals.  For example: if the total
+    # column score was 9 for the current rotation of the rows, summary_totals[9] would be incremented to reflect that a
+    # matrix solution was found with score = 9
     #
     # @param [Integer] score total number of sets found in the current snapshot
     #
