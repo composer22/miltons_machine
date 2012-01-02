@@ -40,7 +40,7 @@ module MiltonsMachine
 
       #   File layout: <set_name>\t<prime_set>\t<interval_vector>\t<description>\n
 
-      FORTE_DICTIONARY_CSV = "../data/forte_dictionary.csv"
+      FORTE_DICTIONARY_CSV = "forte_dictionary.csv"
 
       attr_accessor :dictionary
 
@@ -100,7 +100,7 @@ module MiltonsMachine
       #
 
       def load_dictionary
-        file = File.new(FORTE_DICTIONARY_CSV, 'r')
+        file = File.new( File.dirname(__FILE__) << '/' << FORTE_DICTIONARY_CSV, 'r')
         file.each_line("\n") do |row|
           columns = row.split("\t")
 
