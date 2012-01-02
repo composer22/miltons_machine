@@ -10,5 +10,8 @@
 
 require 'miltons_machine/core/forte_set'
 require 'miltons_machine/core/forte_dictionary'
+
 require 'miltons_machine/tools/matrix_analyzer'
+
+require 'miltons_machine/testing/helpers'
 require 'miltons_machine/version'
