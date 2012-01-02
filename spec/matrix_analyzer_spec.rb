@@ -1,4 +1,4 @@
-describe MatrixAnalyzer do
+describe MiltonsMachine::Tools::MatrixAnalyzer do
 
   context "when performing basic operations" do
 
