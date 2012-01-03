@@ -6,6 +6,7 @@ support for analysis - as defined in the various contexts of 12 tone theory and 
 
 Milton's machine provides:
 * MatrixAnalyser  - a class for analysing rows, including the ability to rotate them
+* Generator - a class for producing new materials, such as permutations
 * ForteDictionary - a class that provides a dictionary of pitch class sets as cataloged by Forte.
 * ForteSet - an extention to the Ruby Array class that adds additional operations via modulo 12.
 
@@ -27,6 +28,8 @@ You can view the Milton's Machine documentation in RDoc format here:
 
 http://rubydoc.info/github/composer22/miltons_machine/master/frames
 
+Look at each class for examples.
+
 === Contributing
 
 We hope that you will consider contributing to Milton's Machine. Please contact us if you have any cool ideas.
@@ -41,7 +44,8 @@ Simply add this to your code
 
     require 'miltons_machine'
 
-Example: "row row row your boat"
+
+Here's an example of using MatrixAnalyzer for finding counterpoint with "row row row your boat"
 
     # From the beats of the melody.
     melody = [0, 0, 0, 4, 4, 4, 7, 7, 0, 7, 2, 0, 7, 3, 0, 0]

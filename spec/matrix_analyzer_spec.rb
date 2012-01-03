@@ -1,5 +1,4 @@
 require 'set'
-require 'stringio'
 
 require 'miltons_machine'
 
