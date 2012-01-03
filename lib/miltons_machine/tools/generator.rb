@@ -9,7 +9,7 @@ module MiltonsMachine
     # This tool includes various methods to facilitate the permutation and supply of materials
     # for composition during the course of either composing manually or in real time.
     #
-    # @example Permutate the following:
+    # @example Permutate set pairs:
     #
     #   working_sets = [[0, 1, 2], [2, 1, 0],
     #                   [3, 4, 5], [5, 4, 3]]
