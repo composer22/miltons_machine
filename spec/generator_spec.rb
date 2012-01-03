@@ -6,7 +6,7 @@ describe MiltonsMachine::Tools::Generator do
 
     it "should permutate set pairs correctly" do
       input_sets    = [[0, 1, 2], [2, 1, 0],
-				               [3, 4, 5], [5, 4, 3]]
+                       [3, 4, 5], [5, 4, 3]]
 
       solution_sets = [[[0, 1, 2], [3, 4, 5]],
                        [[0, 1, 2], [5, 4, 3]],
