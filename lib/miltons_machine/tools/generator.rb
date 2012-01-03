@@ -28,8 +28,8 @@ module MiltonsMachine
       #
       # @example Permutate the following:
       #
-      #   working_sets = [ [0, 1, 2], [2, 1, 0],
-			#	                   [3, 4, 5], [5, 4, 3]]
+      #   working_sets = [[0, 1, 2], [2, 1, 0],
+      #                   [3, 4, 5], [5, 4, 3]]
       #
       #   my_generator = MiltonsMachine::Tools::Generator.new
 			#
