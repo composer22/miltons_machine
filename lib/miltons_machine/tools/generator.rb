@@ -39,7 +39,7 @@ module MiltonsMachine
       #     puts " #{resulting_pair}"
       #   end
       #
-      # would print out:
+      #   would print out:
       #
       #   [[0, 1, 2], [3, 4, 5]]
       #   [[0, 1, 2], [5, 4, 3]]
