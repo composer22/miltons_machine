@@ -152,7 +152,6 @@ describe MiltonsMachine::Core::ForteSet do
       return_set = subject.convert_set_to_alpha
       subject.should eq([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 11, 11, 12, 12])
       return_set.should eq(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'A', 'B', 'B', 'C', 'C'])
-
     end
 
     it "should convert itself in place from numeric form and return a reference" do
@@ -163,6 +162,30 @@ describe MiltonsMachine::Core::ForteSet do
       5.times { |n| subject[10 + n] = n.to_s}
       subject.should eq(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', 'C'])
       return_set.should eq(subject)
+    end
+
+    it "should convert itself from numeric form and return a copy as a chromatic representation" do
+      subject.replace([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13])
+      solution_set = ['C', 'C#/Db', 'D', 'D#/Eb', 'E', 'F', 'F#/Gb', 'G', 'G#/Ab', 'A', 'A#/Bb', 'B', 'unknown',
+                      'unknown']
+      return_set = subject.convert_set_to_chromatic
+      subject.should eq([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13])
+      #return_set.each_with_index do |element, index|
+      #  element.should eq(solution_set[index])
+      #end
+      return_set.should eq(solution_set)
+    end
+
+    # Note: we do not provide an update ! version of convert_set_to_chromatic as there is no way to convert ot back
+
+    it "should allow to convert a pitch class from numeric form to a chromatic representation" do
+      solution_set = ['C', 'C#/Db', 'D', 'D#/Eb', 'E', 'F', 'F#/Gb', 'G', 'G#/Ab', 'A', 'A#/Bb', 'B', 'unknown',
+                      'unknown']
+      result_set = Array.new
+      0.upto(13)  do |n|
+           result_set <<  subject.convert_pc_to_chromatic(n)
+      end
+      result_set.should eq(solution_set)
     end
 
   end

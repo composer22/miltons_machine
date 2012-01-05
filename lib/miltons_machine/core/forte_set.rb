@@ -232,12 +232,48 @@ module MiltonsMachine
         collect! { |pc| pc = convert_pc_to_alpha(pc) }
       end
 
+      # Converts the set in place from numeric representation to a representation from the chromatic scale
+      #
+      # @return [ForteSet] a copy of the set converted to chromatic representation
+      #
+
+      def convert_set_to_chromatic
+        return_set = clone
+        return_set.collect! { |pc| pc = convert_pc_to_chromatic(pc) }
+      end
+
+      # Convert Integer representation of a pitch to a String representation from the chromatic scale
+      #
+      # for example: 3 would return "D#/Eb"
+      #
+      # @param [Integer] pitch_class the pitch to convert
+      # @return [String] the alpha representation of the pitch from the chromatic scale
+      #
+
+      def convert_pc_to_chromatic( pitch_class )
+        case pitch_class
+          when 0  then 'C'
+          when 1  then 'C#/Db'
+          when 2  then 'D'
+          when 3  then 'D#/Eb'
+          when 4  then 'E'
+          when 5  then 'F'
+          when 6  then 'F#/Gb'
+          when 7  then 'G'
+          when 8  then 'G#/Ab'
+          when 9  then  'A'
+          when 10 then 'A#/Bb'
+          when 11 then 'B'
+          else 'unknown'
+        end
+      end
+
       protected
 
       # Given a musical pitch, and how many 1/2 steps you want to transpose it, returns a new pitch at the new
       # transposition
       #
-      # @param [Integer] pitch_class the pitch to transpose ()0-11)
+      # @param [Integer] pitch_class the pitch to transpose (0-11)
       # @param [Integer] number_to_transpose the Tn we wish to transpose it to
       # @return [Integer] a copy of the pitch at the new Tn
       #
@@ -259,7 +295,7 @@ module MiltonsMachine
       # Convert String representation of a pitch to an Integer representation
       #
       # @param [String] pitch_class the pitch to convert
-      # @return [Integer]  a copy of the pitch translated to Integer representation
+      # @return [Integer]  Integer representation of the pitch
       #
 
       def convert_pc_from_alpha( pitch_class )
@@ -274,7 +310,7 @@ module MiltonsMachine
       # Convert Integer representation of a pitch to a String representation
       #
       # @param [Integer] pitch_class the pitch to convert
-      # @return [String] a copy of the pitch translated to a string representation
+      # @return [String] a string representation
       #
 
       def convert_pc_to_alpha( pitch_class )

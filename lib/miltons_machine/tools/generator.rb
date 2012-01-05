@@ -1,4 +1,5 @@
 require 'set'
+require 'bigdecimal'
 
 module MiltonsMachine
   module Tools
@@ -68,6 +69,81 @@ module MiltonsMachine
 
         final_results
       end
+
+      # Given a frequency (in hz), this method will calculate the harmonic series up to the max range of
+      # human hearing (20 kHz) and return an array of values.  Harmonics below human hearing (20 hz) will
+      # still be returned.  Array[0] will contain the fundamental frequency.  The index will refer to the
+      # partial identifier.
+      #
+      # @param [Numeric] fundamental the frequency in hz that we wish to return harmonics on
+      # @return [Array] an array of harmonics with Array[0] being the fundamental
+      #
+
+      def calculate_harmonics( fundamental )
+        #harmonics = [fundamental]
+        harmonics = Array.new
+        1.upto(20000) do |n|
+          result = n * fundamental
+          break if result > 20000       # 20 kHz
+          harmonics << result
+        end
+        harmonics
+      end
+
+      # Given a pitch id for a note in equal temperament, will return the frequency in hz.
+      #
+      # ex: the pitch id for A at 440 hz = 0; for C above it = 3; for E below = -5 etc.
+      #
+      # @param [Integer] pitch_id the pitch id that we want a frequency for
+      # @return [Float] the frequency in hz of the pitch
+      #
+
+      def calculate_equal_frequency( pitch_id )
+        440 * (2 ** ( pitch_id.to_f/12 ) )
+      end
+
+      # Given a pitch id, return the MIDI representation of the note
+      #
+      # ex: the pitch id for A at 440 hz = 0; for C above it = 3; for E below = -5 etc.
+      #
+      # @param [Integer] pitch_id the pitch id that we want translated to MIDI note id
+      # @return [Integer] the MIDI note id
+      #
+
+      def convert_to_midi_note( pitch_id )
+        69 + pitch_id
+      end
+
+      # Given a MIDI note id, translate it to pitch id representation
+      #
+      # @param [Integer] midi_note_id the MIDI note id that we want translated to pitch id
+      # @return [Integer] the pitch id
+      #
+
+      def convert_to_pitch_id( midi_note_id )
+       midi_note_id - 69
+      end
+
+      # Given a pitch id, return the pitch class representation of the note
+      #
+      # @param [Integer] pitch_id the id of the note we wish translated
+      # @return [Integer] the pitch class representation of the note
+      #
+
+      def convert_pitch_to_pitch_class( pitch_id )
+       (pitch_id + 9) % 12
+      end
+
+      # Given a midi id, return the pitch class representation of the note
+      #
+      # @param [Integer] midi_id the id of the note we wish translated
+      # @return [Integer] the pitch class representation of the note
+      #
+
+      def convert_midi_to_pitch_class( midi_id )
+        convert_pitch_to_pitch_class(convert_to_pitch_id(midi_id))
+      end
+
     end
 
   end
