@@ -34,10 +34,10 @@ describe MiltonsMachine::Tools::Generator do
     it "should calculate the Tartini sums and differences correctly" do
        input_frequency_1 = 440     # A
        input_frequency_2 = 493.88  # B above it
-       solution_set = [53.88, 933.88]
+       solution_hash = { difference: 53.88, sum: 933.88 }
        final_results = subject.calculate_tartini( input_frequency_1, input_frequency_2 )
-       solution_set[0].should eq(final_results[0].round(2))
-       solution_set[1].should eq(final_results[1].round(2))
+       solution_hash[:difference].should eq(final_results[:difference].round(2))
+       solution_hash[:sum].should eq(final_results[:sum].round(2))
      end
 
   end

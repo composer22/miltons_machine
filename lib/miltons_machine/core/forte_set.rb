@@ -71,7 +71,7 @@ module MiltonsMachine
       #
 
       def complement_mod12!
-        replace( ForteSet.new(12) { |i| i }  - self )
+        replace( complement_mod12 )
       end
 
       # Return a copy of the set with all elements transposed so that the first element is set to zero.

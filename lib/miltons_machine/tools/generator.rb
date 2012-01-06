@@ -92,13 +92,13 @@ module MiltonsMachine
       #
       # @param [Float] frequency_1 the first frequency that we wish to calculate on
       # @param [Float] frequency_2 the second frequency that we wish to calculate on
-      # @return [Array] the tartini tones [difference, sum]
+      # @return [Hash] the tartini tones [difference, sum]
       #
 
       def calculate_tartini( frequency_1, frequency_2 )
         difference = frequency_1 > frequency_2 ? frequency_1 - frequency_2 : frequency_2 - frequency_1
         sum = frequency_1 + frequency_2
-        [difference, sum]
+        { difference: difference, sum: sum }
       end
 
       # Given a pitch id for a note in equal temperament, will return the frequency in hz.
