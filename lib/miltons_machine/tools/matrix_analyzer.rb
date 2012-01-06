@@ -191,7 +191,7 @@ module MiltonsMachine
         @summary_totals.clear
         @rotation_count = 0
 
-        # Calculate total number of rotation permutations for the run.
+        # Compute total number of rotation permutations for the run.
         # number_of_columns^(number_of_groups - 1)
         @maximum_rotations = @groups[0][0].length ** @max_group_index
       end
@@ -227,7 +227,7 @@ module MiltonsMachine
         result_counts    = Array.new           # Success counters of columns
 
         # Loop on columns in the matrix and extract out the sonority. Compare that to the dictionary of vertical sets to
-        # calculate a score for each column.
+        # compute a score for each column.
 
         @groups[0][0].each_index do |column_id|        # Loop on number of number of columns
           result_counts[column_id] = 0                 # Initialize counter for column

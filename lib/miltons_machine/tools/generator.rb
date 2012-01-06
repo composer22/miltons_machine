@@ -55,8 +55,8 @@ module MiltonsMachine
       #
 
       def permutate_set_pairs( working_sets )
-        compare_set1 	= Set.new
-        compare_set2 	= Set.new
+        compare_set1  = Set.new
+        compare_set2  = Set.new
         final_results = Array.new
 
         working_sets.repeated_permutation(2) do |resulting_pair|
@@ -69,7 +69,7 @@ module MiltonsMachine
         final_results
       end
 
-      # Given a frequency (in hz), this method will calculate the harmonic series up to the max range of
+      # Given a frequency (in hz), this method will compute the harmonic series up to the max range of
       # human hearing (20 kHz) and return an array of values.  Harmonics below human hearing (20 hz) will
       # still be returned.  Array[0] will contain the fundamental frequency.  The index will refer to the
       # partial identifier.
@@ -78,7 +78,7 @@ module MiltonsMachine
       # @return [Array] an array of harmonics with Array[0] being the fundamental
       #
 
-      def calculate_harmonics( fundamental )
+      def compute_harmonics( fundamental )
         harmonics = Array.new
         1.upto(20000) do |n|
           result = n * fundamental
@@ -88,14 +88,14 @@ module MiltonsMachine
         harmonics
       end
 
-      # Given two frequencies (in hz or kHz), this method will calculate the Tartini tones (sum and difference tones)
+      # Given two frequencies (in hz or kHz), this method will compute the Tartini tones (sum and difference tones)
       #
-      # @param [Float] frequency_1 the first frequency that we wish to calculate on
-      # @param [Float] frequency_2 the second frequency that we wish to calculate on
+      # @param [Float] frequency_1 the first frequency that we wish to compute on
+      # @param [Float] frequency_2 the second frequency that we wish to compute on
       # @return [Hash] the tartini tones [difference, sum]
       #
 
-      def calculate_tartini( frequency_1, frequency_2 )
+      def compute_tartini( frequency_1, frequency_2 )
         difference = frequency_1 > frequency_2 ? frequency_1 - frequency_2 : frequency_2 - frequency_1
         sum = frequency_1 + frequency_2
         { difference: difference, sum: sum }
@@ -109,7 +109,7 @@ module MiltonsMachine
       # @return [Float] the frequency in hz of the pitch
       #
 
-      def calculate_equal_frequency( pitch_id )
+      def compute_equal_frequency( pitch_id )
         440 * (2 ** ( pitch_id.to_f/12 ) )
       end
 

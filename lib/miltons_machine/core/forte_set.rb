@@ -34,7 +34,7 @@ module MiltonsMachine
       #
 
       def transpose_mod12!( number_to_transpose = 0 )
-        collect! { |pc| pc = transpose_pitch_class(pc, number_to_transpose) }
+        replace( transpose_mod12(number_to_transpose) )
       end
 
       # Return the inversion of this set
@@ -53,7 +53,7 @@ module MiltonsMachine
       #
 
       def invert_mod12!
-        collect! { |pc| pc = invert_pitch_class(pc) }
+        replace( invert_mod12 )
       end
 
       # Return the complement of this set
@@ -92,9 +92,7 @@ module MiltonsMachine
       #
 
       def zero_mod12!
-        number_to_transpose = 0
-        self[0] == 0 ? number_to_transpose = 0 : number_to_transpose = 12 - self[0]
-        transpose_mod12!(number_to_transpose)
+        replace( zero_mod12 )
       end
 
       # Returns the most compact order of a set
@@ -118,12 +116,7 @@ module MiltonsMachine
       #
 
       def normalize_mod12!
-        sort!
-        working_set = clone
-
-        # Pick the best winner out of the lot of permutations
-        0.upto(length - 2 ) { replace( compare_compact_sets( working_set.rotate!(1) ) ) }
-        self
+        replace( normalize_mod12 )
       end
 
       # Normalize and zero down the set, returning a copy
@@ -142,7 +135,7 @@ module MiltonsMachine
       #
 
       def reduce_mod12!
-        normalize_mod12!.zero_mod12!
+        replace( reduce_mod12 )
       end
 
       # Return the prime version of the set
@@ -162,9 +155,7 @@ module MiltonsMachine
       #
 
       def prime_mod12!
-        prime_form    = normalize_mod12.zero_mod12
-        inverted_form = invert_mod12.normalize_mod12.zero_mod12
-        replace( prime_form.compare_compact_sets(inverted_form) )
+        replace( prime_mod12 )
       end
 
       # Compare two sets and return the most compact version
@@ -210,7 +201,7 @@ module MiltonsMachine
       #
 
       def convert_set_from_alpha!
-        collect! { |pc| pc = convert_pc_from_alpha(pc) }
+        replace( convert_set_from_alpha )
       end
 
       #  Converts the set from numeric representation to alphanumeric and return a copy
@@ -229,7 +220,7 @@ module MiltonsMachine
       #
 
       def convert_set_to_alpha!
-        collect! { |pc| pc = convert_pc_to_alpha(pc) }
+        replace( convert_set_to_alpha )
       end
 
       # Converts the set in place from numeric representation to a representation from the chromatic scale
