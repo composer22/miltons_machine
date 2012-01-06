@@ -122,7 +122,7 @@ module MiltonsMachine
         working_set = clone
 
         # Pick the best winner out of the lot of permutations
-        0.upto(length - 2 ) { self.replace( compare_compact_sets( working_set.rotate!(1) ) ) }
+        0.upto(length - 2 ) { replace( compare_compact_sets( working_set.rotate!(1) ) ) }
         self
       end
 

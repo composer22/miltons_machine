@@ -1,5 +1,4 @@
 require 'set'
-require 'bigdecimal'
 
 module MiltonsMachine
   module Tools
@@ -75,12 +74,11 @@ module MiltonsMachine
       # still be returned.  Array[0] will contain the fundamental frequency.  The index will refer to the
       # partial identifier.
       #
-      # @param [Numeric] fundamental the frequency in hz that we wish to return harmonics on
+      # @param [Float] fundamental the frequency in hz that we wish to return harmonics on
       # @return [Array] an array of harmonics with Array[0] being the fundamental
       #
 
       def calculate_harmonics( fundamental )
-        #harmonics = [fundamental]
         harmonics = Array.new
         1.upto(20000) do |n|
           result = n * fundamental
@@ -88,6 +86,19 @@ module MiltonsMachine
           harmonics << result
         end
         harmonics
+      end
+
+      # Given two frequencies (in hz or kHz), this method will calculate the Tartini tones (sum and difference tones)
+      #
+      # @param [Float] frequency_1 the first frequency that we wish to calculate on
+      # @param [Float] frequency_2 the second frequency that we wish to calculate on
+      # @return [Array] the tartini tones [difference, sum]
+      #
+
+      def calculate_tartini( frequency_1, frequency_2 )
+        difference = frequency_1 > frequency_2 ? frequency_1 - frequency_2 : frequency_2 - frequency_1
+        sum = frequency_1 + frequency_2
+        [difference, sum]
       end
 
       # Given a pitch id for a note in equal temperament, will return the frequency in hz.
