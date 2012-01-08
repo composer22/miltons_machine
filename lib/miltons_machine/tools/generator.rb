@@ -57,7 +57,7 @@ module MiltonsMachine
       def permutate_set_pairs( working_sets )
         compare_set1  = Set.new
         compare_set2  = Set.new
-        final_results = Array.new
+        final_results = []
 
         working_sets.repeated_permutation(2) do |resulting_pair|
           # filter out duplicate prime and retrogrades

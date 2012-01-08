@@ -127,9 +127,9 @@ module MiltonsMachine
       def initialize( minimax_score = Range.new(0, 99999999), report_details = false )
         @minimax_score     = minimax_score
         @report_details    = report_details
-        @groups            = Array.new
-        @search_sets       = Array.new
-        @summary_totals    = Array.new
+        @groups            = []
+        @search_sets       = []
+        @summary_totals    = []
         @max_group_index   = 0
         @max_column_index  = 0
         @rotation_count    = 0
@@ -144,7 +144,7 @@ module MiltonsMachine
       #
 
       def add_row( group_id, row, number_to_transpose = 0 )
-        @groups[group_id - 1] ||= Array.new
+        @groups[group_id - 1] ||= []
         @groups[group_id - 1] << MiltonsMachine::Core::ForteSet.new(row).transpose_mod12(number_to_transpose)
         @max_group_index  = @groups.length - 1
         @max_column_index = @groups[0][0].length - 1
@@ -224,7 +224,7 @@ module MiltonsMachine
 
       def analyze_sonorities
         sonority_to_test = Set.new             # A work space for slicing
-        result_counts    = Array.new           # Success counters of columns
+        result_counts    = []                  # Success counters of columns
 
         # Loop on columns in the matrix and extract out the sonority. Compare that to the dictionary of vertical sets to
         # compute a score for each column.

@@ -38,10 +38,6 @@ describe MiltonsMachine::Core::Spectrum do
        solution_hash[:sum].should eq(final_results[:sum].round(2))
      end
 
-  end
-
-  context "when performing translation operations" do
-
     it "should compute equal temperament frequency correctly" do
       final_result = []
       solution_set = [174.61, 185.0, 196.0, 207.65, 220.0, 233.08, 246.94, 261.63, 277.18, 293.66, 311.13, 329.63,
@@ -52,6 +48,10 @@ describe MiltonsMachine::Core::Spectrum do
       end
       final_result.should eq(solution_set)
     end
+
+  end
+
+  context "when performing translation operations" do
 
     it "should translate pitch id to MIDI note id correctly" do
       final_result = []

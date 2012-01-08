@@ -181,7 +181,7 @@ describe MiltonsMachine::Core::ForteSet do
     it "should allow to convert a pitch class from numeric form to a chromatic representation" do
       solution_set = ['C', 'C#/Db', 'D', 'D#/Eb', 'E', 'F', 'F#/Gb', 'G', 'G#/Ab', 'A', 'A#/Bb', 'B', 'unknown',
                       'unknown']
-      result_set = Array.new
+      result_set = []
       0.upto(13)  do |n|
            result_set <<  subject.convert_pc_to_chromatic(n)
       end
