@@ -16,9 +16,9 @@ describe MiltonsMachine::Tools::MatrixAnalyzer do
       subject.add_row(2, result_set_2)
       subject.add_row(3, result_set_3)
       groups = subject.send(:groups)
-      groups[0][0].should eq(result_set_1)
-      groups[1][0].should eq(result_set_2)
-      groups[2][0].should eq(result_set_3)
+      groups[0][0].should eq result_set_1
+      groups[1][0].should eq result_set_2
+      groups[2][0].should eq result_set_3
     end
 
     it "should add a search set as an array" do
@@ -30,9 +30,9 @@ describe MiltonsMachine::Tools::MatrixAnalyzer do
       subject.add_search_set(result_set_3)
       compare_set = Set.new(result_set_1)
       search_sets = subject.send(:search_sets)
-      search_sets[0].should eq(compare_set)
-      search_sets[1].should eq(compare_set.replace(result_set_2))
-      search_sets[2].should eq(compare_set.replace(result_set_3))
+      search_sets[0].should eq compare_set
+      search_sets[1].should eq compare_set.replace(result_set_2)
+      search_sets[2].should eq compare_set.replace(result_set_3)
     end
 
     it "should add a search set by Forte set name" do
@@ -41,9 +41,9 @@ describe MiltonsMachine::Tools::MatrixAnalyzer do
       subject.add_forte_set('8-18')
       compare_set = Set.new([0, 1, 3, 4, 5])
       search_sets = subject.send(:search_sets)
-      search_sets[0].should eq(compare_set)
-      search_sets[1].should eq(compare_set.replace([0, 1, 2, 3, 4, 6, 9]))
-      search_sets[2].should eq(compare_set.replace([0, 1, 2, 3, 5, 6, 8, 9]))
+      search_sets[0].should eq compare_set
+      search_sets[1].should eq compare_set.replace([0, 1, 2, 3, 4, 6, 9])
+      search_sets[2].should eq compare_set.replace([0, 1, 2, 3, 5, 6, 8, 9])
     end
 
     it "should run the analysis correctly" do

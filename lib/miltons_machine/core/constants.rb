@@ -2,8 +2,21 @@ module MiltonsMachine
   module Core
     module Constants
 
-      MIN_HUMAN_HEARING = 10     # 20 hz really, but we nudge it a bit, as some people are moles
-      MAX_HUMAN_HEARING = 26000  # 20 kHz really, but we nudge it a bit, as some people are bats and feel the music
+      # 20 hz really, but we nudge it a bit, as some people are moles
+
+      MIN_HUMAN_HEARING     =   10
+
+      # 20 kHz really, but we nudge it a bit, as some people are bats and feel the music
+
+      MAX_HUMAN_HEARING     = 26000
+
+      # 1200/log(2)
+
+      CENTS_CONVERSION      = 3986.31371
+
+      # used for converting cents to a frequency interval in the octave and is equal to 2 ** (1/1200)
+
+      TWELVE_TET_CONVERSION = 1.00057779
 
       # Some commonly known just-intonation scales...or use your own!
       # TODO load this from a file into a singleton so we can add to our collection externally and save memory

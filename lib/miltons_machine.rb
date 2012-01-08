@@ -10,6 +10,7 @@
 require 'miltons_machine/core/constants'
 require 'miltons_machine/core/forte_set'
 require 'miltons_machine/core/forte_dictionary'
+require 'miltons_machine/core/tuning'
 require 'miltons_machine/core/spectrum'
 
 require 'miltons_machine/tools/generator'

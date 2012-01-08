@@ -1,0 +1,16 @@
+! tenney_tester.scl
+!
+Modification of tenny_12.scl for rspec testing of the Tuning class
+ 11
+!
+ 17/16
+ 9/8
+ 19/16
+ 5/4
+ 1.3125 is equal to 21/16
+ 11/8
+ 3/2
+ 1.5625 is equal to 25/16
+ 13/8
+ 7/4
+ 2/1

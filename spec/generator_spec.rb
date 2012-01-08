@@ -18,7 +18,7 @@ describe MiltonsMachine::Tools::Generator do
                        [[5, 4, 3], [2, 1, 0]]]
 
       final_results = subject.permutate_set_pairs( input_sets )
-      final_results.should eq(solution_sets)
+      final_results.should eq solution_sets
     end
 
   end

@@ -15,7 +15,7 @@ describe MiltonsMachine::Core::Spectrum do
                       24659.32, 25099.665, 25540.01, 25980.355]
       final_results = MiltonsMachine::Core::Spectrum.compute_harmonics( input_frequency )
       final_results.map!{ |frequency| frequency = frequency.round(3) }
-      final_results.should eq(solution_set)
+      final_results.should eq solution_set
     end
 
     it "should compute the subharmonic series correctly" do
@@ -26,7 +26,7 @@ describe MiltonsMachine::Core::Spectrum do
                       12.951, 12.581, 12.232, 11.901, 11.588, 11.291, 11.009, 10.74, 10.484, 10.241, 10.008]
       final_results = MiltonsMachine::Core::Spectrum.compute_subharmonics( input_frequency )
       final_results.map!{ |frequency| frequency = frequency.round(3) }
-      final_results.should eq(solution_set)
+      final_results.should eq solution_set
     end
 
     it "should compute the Tartini sums and differences correctly" do
@@ -34,8 +34,8 @@ describe MiltonsMachine::Core::Spectrum do
        input_frequency_2 = 493.88  # B above it
        solution_hash = { difference: 53.88, sum: 933.88 }
        final_results = MiltonsMachine::Core::Spectrum.compute_tartini( input_frequency_1, input_frequency_2 )
-       solution_hash[:difference].should eq(final_results[:difference].round(2))
-       solution_hash[:sum].should eq(final_results[:sum].round(2))
+       solution_hash[:difference].should eq final_results[:difference].round(2)
+       solution_hash[:sum].should eq final_results[:sum].round(2)
      end
 
     it "should compute equal temperament frequency correctly" do
@@ -46,7 +46,7 @@ describe MiltonsMachine::Core::Spectrum do
       -16.upto(16) do |n|
         final_result << MiltonsMachine::Core::Spectrum.equal_frequency(n).round(2)
       end
-      final_result.should eq(solution_set)
+      final_result.should eq solution_set
     end
 
   end
@@ -60,7 +60,7 @@ describe MiltonsMachine::Core::Spectrum do
       -20.upto(20) do |n|
           final_result << MiltonsMachine::Core::Spectrum.pitch_id_to_midi(n)
       end
-      final_result.should eq(solution_set)
+      final_result.should eq solution_set
     end
 
     it "should translate MIDI note id to pitch id correctly" do
@@ -69,7 +69,7 @@ describe MiltonsMachine::Core::Spectrum do
       60.upto(80) do |n|
           final_result << MiltonsMachine::Core::Spectrum.midi_to_pitch_id(n)
       end
-      final_result.should eq(solution_set)
+      final_result.should eq solution_set
     end
 
     it "should translate pitch id to pitch class representation" do
@@ -78,7 +78,7 @@ describe MiltonsMachine::Core::Spectrum do
       -12.upto(12) do |n|
           final_result << MiltonsMachine::Core::Spectrum.pitch_to_pitch_class(n)
       end
-      final_result.should eq(solution_set)
+      final_result.should eq solution_set
     end
 
     it "should translate midi id to pitch class representation" do
@@ -87,7 +87,7 @@ describe MiltonsMachine::Core::Spectrum do
       55.upto(82) do |n|
           final_result << MiltonsMachine::Core::Spectrum.midi_to_pitch_class(n)
       end
-      final_result.should eq(solution_set)
+      final_result.should eq solution_set
     end
 
   end

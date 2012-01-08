@@ -4,8 +4,7 @@ module MiltonsMachine
     #
     # == Class: Spectrum
     #
-    # This class is provides methods and services to manipulate frequencies in sonic space including
-    # teh loading and processing of temperaments and alternative scales related to micro-tonality.
+    # This class provides methods and services to manipulate frequencies in sonic space.
     #
 
     class Spectrum
@@ -14,8 +13,13 @@ module MiltonsMachine
 
       attr_accessor :sonic_space
 
+      # A set of tunings that we use to create scales in this space
+
+      attr_accessor :tunings
+
       def initialize
           @sonic_space = []
+          @tunings     = {}
       end
 
       # Given a frequency (in hz), this method will compute the harmonic series up to the max range of
@@ -90,18 +94,17 @@ module MiltonsMachine
         compute_octave(440, (pitch_id.to_f/12))
       end
 
-      # Given a fundamental frequency and ratios, this routine will compute a tuning and return the results
+      # Given a fundamental frequency and ratio as cents, this routine will compute a scale and return the results
       #
       # @param [Float] fundamental the starting frequency of the octave we wish to compute
-      # @param [Array] tuning_ratios an array of tuning ratios to apply against the fundamental
+      # @param [Array] cents an array of tuning ratios in cents to apply against the fundamental
       # @return [Array] an array of frequencies, each representing one degree of the spectrum
-      # TODO Test
       # TODO Test depends on loading tuning files for the ratios
 
-      def self.compute_tuning( fundamental, tuning_ratios )
+      def self.compute_scale( fundamental, cents )
         spectrum = [fundamental]
-        tuning_ratios.each do |ratio|
-          frequency = fundamental * ratio
+        cents.each do |cent|
+          frequency =  MiltonsMachine::Core::Constants::TWELVE_TET_CONVERSION ** cent * fundamental
           break if frequency > MiltonsMachine::Core::Constants::MAX_HUMAN_HEARING
           spectrum << frequency
         end
