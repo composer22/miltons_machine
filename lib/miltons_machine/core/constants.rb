@@ -4,7 +4,7 @@ module MiltonsMachine
 
       # 20 hz really, but we nudge it a bit, as some people are moles
 
-      MIN_HUMAN_HEARING     =   10
+      MIN_HUMAN_HEARING     = 10
 
       # 20 kHz really, but we nudge it a bit, as some people are bats and feel the music
 

@@ -1,14 +1,15 @@
 == Milton's Machine
 
-Milton's Machine's goal is to provide a "practical" application of set theory tools for musical composition, with some
-support for analysis - as defined in the various contexts of 12 tone theory and its offshoots
-(e.g. Forte, Morris, Starr, Lewin, Cohn, etc.).
+Milton's Machine's goal is to provide a "practical" application of theoretic and  spectral tools for musical
+composition, with some support for analysis.
 
 Milton's machine provides:
-* MatrixAnalyser  - a class for analysing rows, including the ability to rotate them
 * Generator - a class for producing new materials, such as permutations
 * ForteDictionary - a class that provides a dictionary of pitch class sets as cataloged by Forte.
-* ForteSet - an extention to the Ruby Array class that adds additional operations via modulo 12.
+* ForteSet - an extention to the Ruby Array class that adds additional operations for modulo 12 operations.
+* MatrixAnalyser  - a class for analysing rows, including the ability to rotate them
+* Spectrum - a class for manipulating sonic space (harmonics, scales etc)
+* Tuning - a class for manipulating and loading tunings related to different tonalities and microtonality.
 
 == Information
 
@@ -32,9 +33,11 @@ Look at each class for examples.
 
 === Contributing
 
-We hope that you will consider contributing to Milton's Machine. Please contact us if you have any cool ideas.
+This is a personal project for the time being.  Please contact me if you have any cool ideas.
 
 === Installation
+
+Not publically release yet, as I continue to add things, but eventually you'll just download it via...
 
     gem install miltons_machine
 
@@ -44,6 +47,7 @@ Simply add this to your code
 
     require 'miltons_machine'
 
+Plans are in the works for demo code directory.  But...
 
 Here's an example of using MatrixAnalyzer for finding counterpoint with "row row row your boat"
 

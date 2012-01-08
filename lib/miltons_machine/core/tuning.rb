@@ -41,7 +41,7 @@ module MiltonsMachine
       attr_accessor :file_path
 
       def initialize( file_path = '', cents = [], description = '' )
-          @cents      = cents
+          @cents       = cents
           @file_path   = file_path
           @description = description
           load(file_path) unless file_path.eql? ''
