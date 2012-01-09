@@ -9,17 +9,13 @@ module MiltonsMachine
     #
     # @note tunings can either be specified directly with this class, or can be loaded from an external file.
     # If loaded from an external file, the file must be in a "Scala" format.  For a complete detail on this
-    # specification:
+    # specification @see http://www.huygens-fokker.org/scala/
     #
-    # @see http://www.huygens-fokker.org/scala/
-    #
-    # The site also provides over 4,000 alternative tuning files available for free download.  Here is a list:
+    # The site also provides over 4,000 alternative tuning files available for download.  Here is a list:
     #
     # @see http://www.huygens-fokker.org/docs/scalesdir.txt
     #
-    # You can download them from:
-    #
-    # @see http://www.huygens-fokker.org/docs/scales.zip
+    # You can download them @see http://www.huygens-fokker.org/docs/scales.zip
     #
     # and then unzip them ()using the -a parameter if you have a mac)
     #

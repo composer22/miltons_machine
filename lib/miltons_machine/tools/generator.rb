@@ -6,8 +6,8 @@ module MiltonsMachine
     #
     # == Class: Generator
     #
-    # This tool includes various methods to facilitate the permutation and supply of materials
-    # for composition during the course of either composing manually or in real time.
+    # This tool includes various methods to facilitate the permutation and supply of materials for composition during
+    # the course of either composing manually or in real time.
     #
     # @example Permutate set pairs:
     #
@@ -35,7 +35,6 @@ module MiltonsMachine
     #
 
     class Generator
-      public
 
       # Constructor
       #
@@ -43,7 +42,7 @@ module MiltonsMachine
       #
 
       def initialize
-        # stubbed
+        # stubbed for now
       end
 
       # Given an array of sets as a parameter, this method will permutate combinations

@@ -1,0 +1,10 @@
+== Milton's Machine - Common Tuning Files
+
+This area reserves an area for some well known tunings that can be loaded by the Tuning class.  They are also meant
+to be examples for your own use.
+
+For additional information on tuning files, @see http://www.huygens-fokker.org/scala/
+
+To download over 4,000 tuning files from this site, @@see http://www.huygens-fokker.org/scala/downloads.html
+
+For an index of these files, @see http://www.huygens-fokker.org/docs/scalesdir.txt
