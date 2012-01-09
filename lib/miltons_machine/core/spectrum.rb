@@ -9,11 +9,11 @@ module MiltonsMachine
 
     class Spectrum
 
-      # Represents the spectrum of frequencies that we hear or feel.
+      # Represents a spectrum of frequencies that we wish to control.  These can be scales or any musical object.
 
       attr_accessor :sonic_space
 
-      # A set of tunings that we use to create scales in this space
+      # A hash of tunings that we use to create frequencies in this space
 
       attr_accessor :tunings
 
@@ -22,41 +22,50 @@ module MiltonsMachine
           @tunings     = {}
       end
 
-      # Given a frequency (in hz), this method will compute the harmonic series up to the max range of
-      # human hearing and return an array of values.  Harmonics below human hearing will still be returned.
-      # Array[0] will contain the fundamental frequency.  The index will refer to the partial identifier.
+      # Given a frequency (in hz), this method will compute the harmonic or subharmonic series to the min/max range of
+      # human hearing and return an array of values.  The fundamental frequency is also returned.
       #
       # @param [Float] fundamental the frequency in hz that we wish to return harmonics on
-      # @return [Array] an array of harmonics in hz with Array[0] being the fundamental
+      # @param [Float] minimax_frequency the minimum or maximum frequency in hz that we wish to return harmonics on
+      # @return [Array] an array of harmonics in hz - first or last element being the fundamental
       #
 
-      def self.compute_harmonics( fundamental )
+      def self.compute_harmonics( fundamental       = MiltonsMachine::Core::Constants::MIDDLE_A,
+                                  minimax_frequency = MiltonsMachine::Core::Constants::MAXIMUM_HUMAN_HEARING )
         harmonics = []
-        1.upto(MiltonsMachine::Core::Constants::MAX_HUMAN_HEARING) do |n|
-          result = n.to_f * fundamental.to_f
-          break if result > MiltonsMachine::Core::Constants::MAX_HUMAN_HEARING
-          harmonics << result
+        1.upto(MiltonsMachine::Core::Constants::MAXIMUM_HUMAN_HEARING) do |n|
+          if fundamental < minimax_frequency
+            result = n.to_f * fundamental.to_f
+            break if result > minimax_frequency
+            harmonics << result
+          else
+            result = fundamental.to_f / n.to_f
+            break if result < minimax_frequency
+            harmonics.push(result)
+          end
         end
         harmonics
       end
 
-      # Given a frequency (in hz), this method will compute the harmonic series up to the max range of
-      # human hearing and return an array of values.  Harmonics below human hearing will still be returned.
-      # Array[0] will contain the fundamental frequency.  The index will refer to the partial identifier.
+      # Given a fundamental frequency and ratio of cents, this routine will compute a sequence of frequencies
+      # and return the results.
       #
-      # @param [Float] fundamental the frequency in hz that we wish to return harmonics on
-      # @return [Array] an array of harmonics in hz with Array[0] being the fundamental
-      #
+      # @param [Float] fundamental the starting frequency that we wish to compute
+      # @param [Array] cents an array of cents that we wish to apply against the fundamental frequency
+      # @return [Array] an array of frequencies, each representing one degree of the sequence
 
-      def self.compute_subharmonics( fundamental )
-        harmonics = []
-        1.upto(MiltonsMachine::Core::Constants::MAX_HUMAN_HEARING) do |n|
-          result = fundamental.to_f / n.to_f
-          break if result < MiltonsMachine::Core::Constants::MIN_HUMAN_HEARING
-          harmonics << result
+      def self.compute_sequence( fundamental, cents )
+        frequency_sequence = [fundamental]
+        cents
+        cents.each do |cent|
+          # frequency <= (2^(1/1200))^cents * fundamental
+          frequency =  MiltonsMachine::Core::Constants::TWELVE_TET_CONVERSION ** cent * fundamental
+          break if frequency > MiltonsMachine::Core::Constants::MAXIMUM_HUMAN_HEARING
+          frequency_sequence << frequency
         end
-        harmonics
+        frequency_sequence
       end
+
 
       # Given two frequencies (in hz or kHz), this method will compute the Tartini tones (sum and difference tones)
       #
@@ -91,24 +100,7 @@ module MiltonsMachine
       #
 
       def self.equal_frequency( pitch_id )
-        compute_octave(440, (pitch_id.to_f/12))
-      end
-
-      # Given a fundamental frequency and ratio as cents, this routine will compute a scale and return the results
-      #
-      # @param [Float] fundamental the starting frequency of the octave we wish to compute
-      # @param [Array] cents an array of tuning ratios in cents to apply against the fundamental
-      # @return [Array] an array of frequencies, each representing one degree of the spectrum
-      # TODO Test depends on loading tuning files for the ratios
-
-      def self.compute_scale( fundamental, cents )
-        spectrum = [fundamental]
-        cents.each do |cent|
-          frequency =  MiltonsMachine::Core::Constants::TWELVE_TET_CONVERSION ** cent * fundamental
-          break if frequency > MiltonsMachine::Core::Constants::MAX_HUMAN_HEARING
-          spectrum << frequency
-        end
-        spectrum
+        compute_octave( MiltonsMachine::Core::Constants::MIDDLE_A, (pitch_id.to_f/12) )
       end
 
       # Given a pitch id, return the MIDI representation of the note

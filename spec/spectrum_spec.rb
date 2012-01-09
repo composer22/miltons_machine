@@ -7,30 +7,47 @@ describe MiltonsMachine::Core::Spectrum do
     it "should compute the harmonic series correctly" do
       input_frequency = 440.345
       solution_set = [440.345, 880.69, 1321.035, 1761.38, 2201.725, 2642.07, 3082.415, 3522.76, 3963.105, 4403.45,
-                      4843.795, 5284.14, 5724.485, 6164.83, 6605.175, 7045.52, 7485.865, 7926.21, 8366.555,
-                      8806.9, 9247.245, 9687.59, 10127.935, 10568.28, 11008.625, 11448.97, 11889.315, 12329.66,
-                      12770.005, 13210.35, 13650.695, 14091.04, 14531.385, 14971.73, 15412.075, 15852.42, 16292.765,
-                      16733.11, 17173.455, 17613.8, 18054.145, 18494.49, 18934.835, 19375.18, 19815.525, 20255.87,
-                      20696.215, 21136.56, 21576.905, 22017.25, 22457.595, 22897.94, 23338.285, 23778.63, 24218.975,
-                      24659.32, 25099.665, 25540.01, 25980.355]
+                      4843.795, 5284.14, 5724.485, 6164.83, 6605.175, 7045.52, 7485.865, 7926.21, 8366.555, 8806.9,
+                      9247.245, 9687.59, 10127.935, 10568.28, 11008.625, 11448.97, 11889.315, 12329.66, 12770.005,
+                      13210.35, 13650.695, 14091.04, 14531.385, 14971.73, 15412.075, 15852.42, 16292.765, 16733.11,
+                      17173.455, 17613.8, 18054.145, 18494.49, 18934.835, 19375.18, 19815.525, 20255.87, 20696.215,
+                      21136.56, 21576.905, 22017.25]
       final_results = MiltonsMachine::Core::Spectrum.compute_harmonics( input_frequency )
-      final_results.map!{ |frequency| frequency = frequency.round(3) }
+      final_results.collect!{ |frequency| frequency = frequency.round(3) }
       final_results.should eq solution_set
     end
 
     it "should compute the subharmonic series correctly" do
       input_frequency = 440.345
       solution_set = [440.345, 220.173, 146.782, 110.086, 88.069, 73.391, 62.906, 55.043, 48.927, 44.035, 40.031,
-                      36.695, 33.873, 31.453, 29.356, 27.522, 25.903, 24.464, 23.176, 22.017, 20.969, 20.016,
-                      19.145, 18.348, 17.614, 16.936, 16.309, 15.727, 15.184, 14.678, 14.205, 13.761, 13.344,
-                      12.951, 12.581, 12.232, 11.901, 11.588, 11.291, 11.009, 10.74, 10.484, 10.241, 10.008]
-      final_results = MiltonsMachine::Core::Spectrum.compute_subharmonics( input_frequency )
-      final_results.map!{ |frequency| frequency = frequency.round(3) }
+                      36.695, 33.873, 31.453, 29.356, 27.522, 25.903, 24.464, 23.176, 22.017, 20.969, 20.016, 19.145,
+                      18.348, 17.614, 16.936, 16.309, 15.727, 15.184, 14.678, 14.205, 13.761, 13.344, 12.951, 12.581,
+                      12.232, 11.901, 11.588, 11.291, 11.009, 10.74, 10.484, 10.241, 10.008, 9.785, 9.573, 9.369,
+                      9.174, 8.987, 8.807, 8.634, 8.468, 8.308, 8.155, 8.006, 7.863, 7.725, 7.592, 7.463, 7.339,
+                      7.219, 7.102, 6.99, 6.88, 6.775, 6.672, 6.572, 6.476, 6.382, 6.291, 6.202, 6.116, 6.032,
+                      5.951, 5.871, 5.794, 5.719, 5.645, 5.574, 5.504, 5.436, 5.37, 5.305, 5.242, 5.181, 5.12,
+                      5.061, 5.004, 4.948, 4.893, 4.839, 4.786, 4.735, 4.685, 4.635, 4.587, 4.54, 4.493, 4.448,
+                      4.403, 4.36, 4.317, 4.275, 4.234, 4.194, 4.154, 4.115, 4.077, 4.04, 4.003]
+      final_results = MiltonsMachine::Core::Spectrum.compute_harmonics( input_frequency,
+                            MiltonsMachine::Core::Constants::MINIMUM_HUMAN_HEARING)
+      final_results.collect!{ |frequency| frequency = frequency.round(3) }
+      final_results.should eq solution_set
+    end
+
+    it "should compute a sequence of frequencies correctly" do
+      input_frequency =  MiltonsMachine::Core::Constants::MIDDLE_A
+      solution_set = [440.0, 467.5, 495.0, 522.5, 550.0, 440.334, 605.0, 660.0, 440.397, 715.0, 770.0, 880.001]
+      file_path = File.dirname(__FILE__) << '/test_files/tunings/tenney_tester.scl'
+
+      tuning = MiltonsMachine::Core::Tuning.new
+      tuning.load(file_path)
+      final_results = MiltonsMachine::Core::Spectrum.compute_sequence( input_frequency, tuning.cents )
+      final_results.collect!{ |frequency| frequency = frequency.round(3) }
       final_results.should eq solution_set
     end
 
     it "should compute the Tartini sums and differences correctly" do
-       input_frequency_1 = 440     # A
+       input_frequency_1 = MiltonsMachine::Core::Constants::MIDDLE_A
        input_frequency_2 = 493.88  # B above it
        solution_hash = { difference: 53.88, sum: 933.88 }
        final_results = MiltonsMachine::Core::Spectrum.compute_tartini( input_frequency_1, input_frequency_2 )

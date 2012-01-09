@@ -1,0 +1,17 @@
+! 5-limit-symmetrical-v1.scl
+!
+5 limit symmetrical version one of 12 tone just temperament ratios
+ 12
+!
+ 16/15
+ 9/8
+ 6/5
+ 5/4
+ 4/3
+ 45/32
+ 3/2
+ 8/5
+ 5/3
+ 16/9
+ 15/8
+ 2/1  # Octave

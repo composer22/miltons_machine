@@ -4,15 +4,16 @@ module MiltonsMachine
     #
     # == Class: Tuning
     #
-    # This class provides methods and services to load and process temperaments and alternative scales related
-    # to different temperaments and micro-tonality.
+    # This class provides methods and services to load and manipulate temperaments both as alternatives to 12 tone
+    # equal temperaments scales and micro-tonality.
     #
-    # @note Tunings can either be specified directly, or can be loaded from an external file.  If loaded from an
-    # external file, the format must be "Scala".  For a complete detail on this specification:
+    # @note tunings can either be specified directly with this class, or can be loaded from an external file.
+    # If loaded from an external file, the file must be in a "Scala" format.  For a complete detail on this
+    # specification:
     #
     # @see http://www.huygens-fokker.org/scala/
     #
-    # The site has over 4,000 tuning files available for download:
+    # The site also provides over 4,000 alternative tuning files available for free download.  Here is a list:
     #
     # @see http://www.huygens-fokker.org/docs/scalesdir.txt
     #
@@ -20,9 +21,9 @@ module MiltonsMachine
     #
     # @see http://www.huygens-fokker.org/docs/scales.zip
     #
-    # and then unzip them
+    # and then unzip them ()using the -a parameter if you have a mac)
     #
-    # @example
+    # @example  OSX
     #   unzip -aa scales.zip
     #
 
@@ -54,9 +55,10 @@ module MiltonsMachine
 
       def load( file_path )
         description_found = false
-        length_found = 0
-        number_of_ratios = 0
+        length_found      = 0
+        number_of_ratios  = 0
 
+        @file_path = file_path
         file = File.new( file_path, 'r')
         file.each_line("\n") do |row|
 
@@ -65,7 +67,6 @@ module MiltonsMachine
           row.lstrip!
           row.rstrip!
           row.squeeze!(' ')
-
           next if row[0] == '!'           # ignore comments
 
           unless description_found        # description is the first non commented line
@@ -74,7 +75,7 @@ module MiltonsMachine
             next
           end
 
-          unless number_of_ratios > 0      # total ratios comes next after description found
+          unless number_of_ratios > 0      # total ratios comes next after description is found
             number_of_ratios = row.to_i
             next
           end
@@ -84,13 +85,12 @@ module MiltonsMachine
           tokens = row.split(' ')
           if tokens[0].include?('.')        # cents
             @cents << tokens[0].to_f
-          elsif( tokens[0].include?('/') )  # if fraction then convert to cents
-            parts = tokens[0].split('/')     #1021.2352069516133
-            @cents << Math.log10((parts[0].to_f /  parts[1].to_f)) * MiltonsMachine::Core::Constants::CENTS_CONVERSION
+          elsif tokens[0].include?('/')     # if fraction then convert to cents
+            parts = tokens[0].split('/')
+            # cents <== log(n/d) * (1200/log(2))
+            @cents << Math.log10( (parts[0].to_f /  parts[1].to_f) ) * MiltonsMachine::Core::Constants::CENTS_CONVERSION
           end
         end
-
-        @file_path = file_path
 
       end
 

@@ -40,11 +40,9 @@ module MiltonsMachine
 
       #   File layout: <set_name>\t<prime_set>\t<interval_vector>\t<description>\n
 
-      FORTE_DICTIONARY_CSV = "forte_dictionary.csv"
+      FORTE_DICTIONARY_CSV = "/data/forte/forte_dictionary.csv"
 
       attr_accessor :dictionary
-
-      private       :dictionary
 
       # Constructor
       #
@@ -52,7 +50,7 @@ module MiltonsMachine
       #
 
       def initialize
-        @dictionary = Hash.new
+        @dictionary = {}
         load_dictionary
       end
 
@@ -91,8 +89,6 @@ module MiltonsMachine
         dictionary_entry.nil? ? nil : dictionary_entry[2].clone
       end
 
-      protected
-
       # Loads the dictionary from a CSV file into a hash dictionary
       #
       # @note  it's a simple table so we don't use any special libraries like csv, faster_csv, ccsv, CSVScan  etc.
@@ -100,7 +96,7 @@ module MiltonsMachine
       #
 
       def load_dictionary
-        file = File.new( File.dirname(__FILE__) << '/' << FORTE_DICTIONARY_CSV, 'r')
+        file = File.new( File.dirname(__FILE__) << FORTE_DICTIONARY_CSV, 'r')
         file.each_line("\n") do |row|
           columns = row.split("\t")
 
