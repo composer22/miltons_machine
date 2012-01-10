@@ -37,7 +37,7 @@ module MiltonsMachine
           else
             result = fundamental.to_f / n.to_f
             break if result < minimax_frequency
-            harmonics.push(result)
+            harmonics.unshift(result)
           end
         end
         harmonics
