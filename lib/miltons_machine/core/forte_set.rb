@@ -24,7 +24,7 @@ module MiltonsMachine
 
       def transpose_mod12( number_to_transpose = 0 )
         return_set = clone
-        return_set.collect! { |pc| pc = transpose_pitch_class(pc, number_to_transpose) }
+        return_set.collect! { |pc| pc = MiltonsMachine::Core::ForteSet.transpose_pc(pc, number_to_transpose) }
       end
 
       # Transposes the set in place and returns a reference to the set at the new transposition
@@ -44,7 +44,7 @@ module MiltonsMachine
 
       def invert_mod12
         return_set = clone
-        return_set.collect! { |pc| pc = invert_pitch_class(pc) }
+        return_set.collect! { |pc| pc = MiltonsMachine::Core::ForteSet.invert_pc(pc) }
       end
 
       # Invert the set in place and return a reference
@@ -192,7 +192,7 @@ module MiltonsMachine
 
       def convert_set_from_alpha
         return_set = clone
-        return_set.collect! { |pc| pc = convert_pc_from_alpha(pc) }
+        return_set.collect! { |pc| pc = MiltonsMachine::Core::ForteSet.pc_from_alpha(pc) }
       end
 
       # Converts the set in place from alpha representation to pc numbers and return a reference
@@ -211,7 +211,7 @@ module MiltonsMachine
 
       def convert_set_to_alpha
         return_set = clone
-        return_set.collect! { |pc| pc = convert_pc_to_alpha(pc) }
+        return_set.collect! { |pc| pc = MiltonsMachine::Core::ForteSet.pc_to_alpha(pc) }
       end
 
       # Converts the set in place from numeric representation to alphanumeric and return a reference
@@ -230,7 +230,7 @@ module MiltonsMachine
 
       def convert_set_to_chromatic
         return_set = clone
-        return_set.collect! { |pc| pc = convert_pc_to_chromatic(pc) }
+        return_set.collect! { |pc| pc = MiltonsMachine::Core::ForteSet.pc_to_chromatic(pc) }
       end
 
       # Convert Integer representation of a pitch to a String representation from the chromatic scale
@@ -241,7 +241,7 @@ module MiltonsMachine
       # @return [String] the alpha representation of the pitch from the chromatic scale
       #
 
-      def convert_pc_to_chromatic( pitch_class )
+      def self.pc_to_chromatic( pitch_class )
         case pitch_class
           when 0  then 'C'
           when 1  then 'C#/Db'
@@ -259,7 +259,6 @@ module MiltonsMachine
         end
       end
 
-      protected
 
       # Given a musical pitch, and how many 1/2 steps you want to transpose it, returns a new pitch at the new
       # transposition
@@ -269,7 +268,7 @@ module MiltonsMachine
       # @return [Integer] a copy of the pitch at the new Tn
       #
 
-      def transpose_pitch_class( pitch_class, number_to_transpose = 0 )
+      def self.transpose_pc( pitch_class, number_to_transpose = 0 )
         (pitch_class + number_to_transpose)  % 12
       end
 
@@ -279,7 +278,7 @@ module MiltonsMachine
       # @return [Integer] a copy of the pitch at the new inversion
       #
 
-      def invert_pitch_class( pitch_class )
+      def self.invert_pc( pitch_class )
         (12 - pitch_class)  % 12
       end
 
@@ -289,7 +288,7 @@ module MiltonsMachine
       # @return [Integer]  Integer representation of the pitch
       #
 
-      def convert_pc_from_alpha( pitch_class )
+      def self.pc_from_alpha( pitch_class )
         case pitch_class.to_s
           when 'A', 'a' then 10
           when 'B', 'b' then 11
@@ -304,7 +303,7 @@ module MiltonsMachine
       # @return [String] a string representation
       #
 
-      def convert_pc_to_alpha( pitch_class )
+      def self.pc_to_alpha( pitch_class )
         case pitch_class.to_i
           when 10 then 'A'
           when 11 then 'B'

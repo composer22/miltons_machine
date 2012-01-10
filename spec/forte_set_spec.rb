@@ -180,9 +180,47 @@ describe MiltonsMachine::Core::ForteSet do
                       'unknown']
       result_set = []
       0.upto(13)  do |n|
-           result_set <<  subject.convert_pc_to_chromatic(n)
+        result_set <<  MiltonsMachine::Core::ForteSet.pc_to_chromatic(n)
       end
       result_set.should eq solution_set
+    end
+
+    it "should transpose an individual pitch class" do
+      solution_set = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 0, 1, 2]
+      result_set = []
+      0.upto(12)  do |n|
+        result_set <<  MiltonsMachine::Core::ForteSet.transpose_pc(n, 2)
+      end
+      result_set.should eq solution_set
+    end
+
+    it "should invert an individual pitch class" do
+      solution_set = [0, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+      result_set = []
+      0.upto(12)  do |n|
+        result_set <<  MiltonsMachine::Core::ForteSet.invert_pc(n)
+      end
+      result_set.should eq solution_set
+    end
+
+    it "should translate pc from alpha to numeric" do
+       solution_set = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 11, 11, 12, 12]
+       test_set = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'a', 'B', 'b', 'C', 'c']
+       result_set = []
+       test_set.each  do |pc|
+         result_set <<  MiltonsMachine::Core::ForteSet.pc_from_alpha(pc)
+       end
+       result_set.should eq solution_set
+    end
+
+    it "should translate pc from numeric to alphanumeric" do
+       solution_set = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C']
+       test_set = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+       result_set = []
+       test_set.each  do |pc|
+         result_set <<  MiltonsMachine::Core::ForteSet.pc_to_alpha(pc)
+       end
+       result_set.should eq solution_set
     end
 
   end

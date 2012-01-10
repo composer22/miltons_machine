@@ -9,17 +9,13 @@ module MiltonsMachine
 
     class Spectrum
 
-      # Represents a spectrum of frequencies that we wish to control.  These can be scales or any musical object.
+      # Represents a spectrum of frequencies that we wish to manipulate control.  These can be scales or any
+      # musical object.
 
       attr_accessor :sonic_space
 
-      # A hash of tunings that we use to create frequencies in this space
-
-      attr_accessor :tunings
-
       def initialize
           @sonic_space = []
-          @tunings     = {}
       end
 
       # Given a frequency (in hz), this method will compute the harmonic or subharmonic series to the min/max range of
