@@ -18,6 +18,19 @@ describe MiltonsMachine::Core::Math do
       test_set.each { |item| result_set << MiltonsMachine::Core::Math.quantize(item, 25) }
       result_set.should eq solution_set
     end
+
+    it "should rescale information correctly" do
+      result = MiltonsMachine::Core::Math.rescale(30, Range.new(1, 100), Range.new(5, 95))
+      result.round(3).should eq 31.364
+      result = MiltonsMachine::Core::Math.rescale(30, Range.new(1, 100), Range.new(5, 95), 4)
+      result.round(3).should eq 20.028
+    end
+
+    it "should create a random number within a range correctly" do
+      range = Range.new(-200, 5)
+      result = MiltonsMachine::Core::Math.random(range)
+      range.cover?(result.round(3)).should eq true
+    end
   end
 
 end
