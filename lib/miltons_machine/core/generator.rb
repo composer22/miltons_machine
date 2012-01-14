@@ -1,22 +1,19 @@
 require 'set'
 
 module MiltonsMachine
-  module Tools
+  module Core
 
     #
     # == Class: Generator
     #
-    # This tool includes various methods to facilitate the permutation and supply of materials for composition during
-    # the course of either composing manually or in real time.
+    # This class includes various methods to facilitate the permutation and supply of materials for composition
     #
     # @example Permutate set pairs:
     #
     #   working_sets = [[0, 1, 2], [2, 1, 0],
     #                   [3, 4, 5], [5, 4, 3]]
     #
-    #   my_generator = MiltonsMachine::Tools::Generator.new
-    #
-    #   final_results =  my_generator.permutate_set_pairs( working_sets )
+    #   final_results =  MiltonsMachine::Tools::Generator.permutate_set_pairs( working_sets )
     #
     #   final_results.each do |resulting_pair|
     #     puts " #{resulting_pair}"
@@ -53,7 +50,7 @@ module MiltonsMachine
       # @return [Array] an array of pairings, less duplicates.
       #
 
-      def permutate_set_pairs( working_sets )
+      def self.permutate_set_pairs( working_sets )
         compare_set1  = Set.new
         compare_set2  = Set.new
         final_results = []

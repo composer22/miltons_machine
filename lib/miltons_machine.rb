@@ -15,11 +15,11 @@ require 'miltons_machine/core/music_math'
 # Core classes
 require 'miltons_machine/core/forte_set'
 require 'miltons_machine/core/forte_dictionary'
+require 'miltons_machine/core/generator'
 require 'miltons_machine/core/tuning'
 require 'miltons_machine/core/spectrum'
 
 # Tools
-require 'miltons_machine/tools/generator'
 require 'miltons_machine/tools/matrix_analyzer'
 
 # Meta
