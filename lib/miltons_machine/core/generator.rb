@@ -6,7 +6,8 @@ module MiltonsMachine
     #
     # == Class: Generator
     #
-    # This class includes various methods to facilitate the permutation and supply of materials for composition
+    # This class expands on the Array class to includes various methods to facilitate the permutation and
+    # the supply of materials for musical composition.  No monkey patching.
     #
     # @example Permutate set pairs:
     #
@@ -31,7 +32,7 @@ module MiltonsMachine
     #   [[5, 4, 3], [2, 1, 0]]
     #
 
-    class Generator
+    class Generator < Array
 
       # Constructor
       #
