@@ -1,15 +1,17 @@
 == Milton's Machine
 
-Milton's Machine's goal is to provide a "practical" application of theoretic and  spectral tools for musical
-composition, with some support for analysis.
+Milton's Machine's goal is to provide a "practical" theoretic and spectral toolset for musical composition, with some
+support for analysis.  This base toolset can be leveraged in your own algorithmic composition code to provide
+enhanced functionality over Ruby's supplyed classes. For example, the Ruby Array class provides very rich functionality
+for manipulating entries; however, it doesn't provide for mod 12 operations.
 
 Milton's machine provides:
-* Generator - a class for producing new materials, such as permutations
+* Generator - a class for producing new materials, such as permutations.
 * ForteDictionary - a class that provides a dictionary of pitch class sets as cataloged by Forte.
 * ForteSet - an extention to the Ruby Array class that adds additional operations for modulo 12 operations.
-* MatrixAnalyser  - a class for analysing rows, including the ability to rotate them
-* Spectrum - a class for manipulating sonic space (harmonics, scales etc)
-* Tuning - a class for manipulating and loading tunings related to different tonalities and microtonality.
+* MatrixAnalyser - a class for analysing rows, including the ability to rotate them in groups
+* Spectrum - a class for manipulating and mapping sonic materials
+* Tuning - a class for manipulating and loading tunings related to different temperaments and microtonality.
 
 == Information
 
@@ -33,7 +35,8 @@ Look at each class for examples.
 
 === Contributing
 
-This is a personal project for the time being.  Please contact me if you have any cool ideas.
+This is a personal project for the time being.  As I find general functionality with my own composing, I will share it.
+Please contact me if you have any cool ideas.
 
 === Installation
 
@@ -49,7 +52,7 @@ Simply add this to your code
 
 Plans are in the works for demo code directory.  But...
 
-Here's an example of using MatrixAnalyzer for finding counterpoint with "row row row your boat"
+Here's a simple example of using MatrixAnalyzer for finding counterpoint with "row row row your boat"
 
     # From the beats of the melody.
     melody = [0, 0, 0, 4, 4, 4, 7, 7, 0, 7, 2, 0, 7, 3, 0, 0]
@@ -94,10 +97,8 @@ Output sample - one detail analysis of a possible rotation and the run summary:
         2 :    48
         3 :    72
         4 :    24
-        5 :    42
+        5 :    42  <== there are 42 permutated solutions that have 5 columns holding major or minor chords
         6 :     6  <== most saturated found = 6 solutions ex: the detail above
-
-ex:  there are 42 permutation solutions that have 5 columns holding major or minor chords
 
 == License
 
