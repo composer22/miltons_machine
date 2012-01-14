@@ -10,7 +10,7 @@
 
 # Base
 require 'miltons_machine/core/constants'
-require 'miltons_machine/core/math'
+require 'miltons_machine/core/music_math'
 
 # Core classes
 require 'miltons_machine/core/forte_set'

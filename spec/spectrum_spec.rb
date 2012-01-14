@@ -54,7 +54,17 @@ describe MiltonsMachine::Core::Spectrum do
        final_results = MiltonsMachine::Core::Spectrum.compute_tartini( input_frequency_1, input_frequency_2 )
        solution_hash[:difference].should eq final_results[:difference].round(2)
        solution_hash[:sum].should eq final_results[:sum].round(2)
-     end
+    end
+
+    it "should compute octave frequencies correctly" do
+       fundamental = 493.88
+       solution_set = [493.88, 987.76, 1975.52, 3951.04, 7902.08, 15804.16, 31608.32]
+       final_results = []
+       7.times do |i|
+        final_results << MiltonsMachine::Core::Spectrum.compute_octave( fundamental, i )
+       end
+       final_results.should eq solution_set
+    end
 
     it "should compute equal temperament frequency correctly" do
       final_result = []

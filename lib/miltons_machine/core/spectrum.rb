@@ -81,7 +81,7 @@ module MiltonsMachine
       # @param [Float] fundamental the starting frequency of the octave we wish to compute
       # @param [Integer] octave_number which octave higher to calculate 0 = unison; 1 = 1 octave; 2 = 2 octaves etc.
       # @return [Float] the frequency of the higher octave
-      # TODO Test
+      #
 
       def self.compute_octave( fundamental, octave_number )
         fundamental * ( 2 ** octave_number )

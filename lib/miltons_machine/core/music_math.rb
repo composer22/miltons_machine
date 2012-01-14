@@ -2,12 +2,12 @@ module MiltonsMachine
   module Core
 
     #
-    # == Class: Math
+    # == Class: MusicMath
     #
     # This class provides additional additional methods and services not found in the standard library
     #
 
-    class Math   # no monkey patching
+    class MusicMath   # no monkey patching
 
       # Given a set of ordered numbers, compute the differences between each pair
       #

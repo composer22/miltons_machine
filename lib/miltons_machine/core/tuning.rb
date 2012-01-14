@@ -84,7 +84,7 @@ module MiltonsMachine
           elsif tokens[0].include?('/')     # if fraction then convert to cents
             parts = tokens[0].split('/')
             # cents <== log(n/d) * (1200/log(2))
-            @cents << Math.log10( (parts[0].to_f /  parts[1].to_f) ) * MiltonsMachine::Core::Constants::CENTS_CONVERSION
+            @cents << Math.log10( (parts[0].to_f / parts[1].to_f) ) * MiltonsMachine::Core::Constants::CENTS_CONVERSION
           end
         end
 
