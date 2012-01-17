@@ -173,6 +173,14 @@ describe MiltonsMachine::Core::ForteSet do
       return_set.should eq solution_set
     end
 
+    it "should allow for multiple subset searches" do
+      solution_set = [[[3, 0, 9], [2, 3, 7], [1, 5, 8], [2, 7, 8], [4, 6, 9]], [false, true, false, false, true]]
+      source_set = [2, 3, 4, 6, 7, 9]
+      search_sets = [[3, 0, 9], [2, 3, 7], [1, 5, 8], [2, 7, 8], [4, 6, 9]]
+      result_set = MiltonsMachine::Core::ForteSet.search_for_subsets(source_set, search_sets)
+      result_set.should eq solution_set
+    end
+
     # Note: we do not provide an update ! version of convert_set_to_chromatic as there is no way to convert ot back
 
     it "should allow to convert a pitch class from numeric form to a chromatic representation" do

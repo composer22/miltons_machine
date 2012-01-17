@@ -1,3 +1,5 @@
+require 'set'
+
 module MiltonsMachine
   module Core
     #
@@ -231,6 +233,23 @@ module MiltonsMachine
       def convert_set_to_chromatic
         return_set = clone
         return_set.collect! { |pc| pc = MiltonsMachine::Core::ForteSet.pc_to_chromatic(pc) }
+      end
+
+      # Given a set and an array of subsets to search for, this method will return true or false on each one found
+      #
+      # @param [Array] set the set to search
+      # @param [Array] search_sets the subsets to search for
+      # @return [Array] the search sets with truth table for each one
+      #
+      def self.search_for_subsets(source_set, search_sets)
+        sonority = Set.new(source_set)
+        set_to_search = Set.new
+        results = []
+        search_sets.each do |search_set|
+          set_to_search.replace(search_set)
+          set_to_search.subset?(sonority) ?  results << true : results << false
+        end
+        [search_sets.clone, results]
       end
 
       # Convert Integer representation of a pitch to a String representation from the chromatic scale
