@@ -31,8 +31,6 @@ You can view the Milton's Machine documentation in RDoc format here:
 
 http://rubydoc.info/github/composer22/miltons_machine/master/frames
 
-Look at each class for examples.
-
 === Contributing
 
 This is a personal project for the time being.  As I find general functionality with my own composing, I will share it.
@@ -50,55 +48,7 @@ Simply add this to your code
 
     require 'miltons_machine'
 
-Plans are in the works for demo code directory.  But...
-
-Here's a simple example of using MatrixAnalyzer for finding counterpoint with "row row row your boat"
-
-    # From the beats of the melody.
-    melody = [0, 0, 0, 4, 4, 4, 7, 7, 0, 7, 2, 0, 7, 3, 0, 0]
-
-    # Sonorities to search for:
-    major = [0, 4, 7]    # 3-11i
-    minor = [0, 3, 7]    # 3-11
-
-    analysis_engine = MiltonsMachine::Tools::MatrixAnalyzer.new
-    analysis_engine.report_details=(true)
-
-    # First add the rows.  Three voices = triadic; independently rotated by setting them in separate groups
-    analysis_engine.add_row(1, melody)
-    analysis_engine.add_row(2, melody)
-    analysis_engine.add_row(3, melody)
-
-    # Then, create all transpositions of sets to search for:
-    0.upto(11) do |i|
-      #analysis_engine.add_search_set(major, i)            # TnI
-      #analysis_engine.add_search_set(minor, i)            # Tn
-      analysis_engine.add_forte_set("3-11", i)             # Tn      <== or optionally use Forte Set names like here
-      analysis_engine.add_forte_set("3-11i", i)            # TnI
-    end
-
-    analysis_engine.run_rotation_analysis
-
-Output sample - one detail analysis of a possible rotation and the run summary:
-
-    [0, 0, 0, 4, 4, 4, 7, 7, 0, 7, 2, 0, 7, 3, 0, 0]  Group 1 <== original melody
-    [4, 4, 7, 7, 0, 7, 2, 0, 7, 3, 0, 0, 0, 0, 0, 4]  Group 2 <== melody rotated 12x
-    [0, 7, 2, 0, 7, 3, 0, 0, 0, 0, 0, 4, 4, 4, 7, 7]  Group 3 <== melody rotated 8x
-    ---------
-    [0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1]  Score  <== the # maj/min sets (analysis)
-    Total Score: 6
-
-    ...
-
-    Score : # Instances
-    -------------------
-        0 :    46
-        1 :    18
-        2 :    48
-        3 :    72
-        4 :    24
-        5 :    42  <== there are 42 permutated solutions that have 5 columns holding major or minor chords
-        6 :     6  <== most saturated found = 6 solutions ex: the detail above
+@see miltons_machine/examples/ for examples on usage.
 
 == License
 
