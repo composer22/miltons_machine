@@ -36,7 +36,7 @@ module MiltonsMachine
 
       # A 3d array for holding horizontal ordered sets (rows) - each set:
       # 1) representing an ordered voice of pitches in the matrix
-      # 2) should be rotatable like a cannon
+      # 2) should be rotatable like a canon
       # 3) encoded in mod12 pitch class notation (0 = c up to 11 = b)
 
       attr_accessor :groups

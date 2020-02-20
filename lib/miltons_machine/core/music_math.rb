@@ -36,12 +36,12 @@ module MiltonsMachine
         (step * ( (input / step ) + 0.5 )).floor
       end
 
-      # Converts a rhythm unit to it's equivalent of time unit.
+      # Converts a rhythm unit to its equivalent of time unit.
       #
       # @param [Numeric] rhythm a fraction of a whole note
       # @param [Numeric] beat the unit for a given measure - for example 1/4 = beat in 4/4 time
       # @param [Numeric] tempo how many beats per unit of time ex: a 58 Metronome Mark would equal 58
-      # @param [Numeric] unit_of_time the time in seconds ex: 58 Metronome Mark would be 60 seconds (e.g 1 minute)
+      # @param [Numeric] unit_of_time the time in seconds ex: 58 Metronome Mark would be 60 seconds (e.g. 1 minute)
       # @return [Float] the equivalent time value
       #
 

@@ -34,7 +34,7 @@ melody = [0, 0, 0, 4, 4, 4, 7, 7, 0, 7, 2, 0, 7, 3, 0, 0]     # from the beats o
 major =  [0, 4, 7]                                            # 3-11i
 minor =  [0, 3, 7]                                            # 3-11
 
-analysis_engine = MiltonsMachine::Tools:MatrixAnalyzer.new
+analysis_engine = MiltonsMachine::Tools::MatrixAnalyzer.new
 analysis_engine.report_details=(true)
 
 # First add the rows.  Three voices = triadic; independent in separate groups
